@@ -1,3 +1,24 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Disable all transitions and animations when reduce-motion class is present */
+.reduce-motion *,
+.reduce-motion *::before,
+.reduce-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* High Contrast adjustments for your Cyber Dark theme */
+.high-contrast {
+  --slate-500: #000000; /* Darker text */
+  --indigo-600: #0000ff; /* Pure blue for visibility */
+}
+
+.high-contrast.dark {
+  background-color: black !important;
+  color: white !important;
+}
