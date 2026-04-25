@@ -1,0 +1,8 @@
+gender,age,region,qualification,selected / rejected
+Male,28,North,Bachelors,selected
+Female,32,South,Masters,selected
+Male,45,East,Bachelors,rejected
+Female,24,West,Bachelors,rejected
+Male,35,North,PhD,selected
+Female,29,South,Bachelors,selected
+Male,50,West,Masters,rejected
