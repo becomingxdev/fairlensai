@@ -4,10 +4,13 @@ const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8080/api',
 });
 
-// Add a request interceptor to handle auth tokens later
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
-  if (token) {
+import { getAuth } from 'firebase/auth';
+
+api.interceptors.request.use(async (config) => {
+  const auth = getAuth();
+  const user = auth.currentUser;
+  if (user) {
+    const token = await user.getIdToken(); // always fresh, auto-refreshes
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;

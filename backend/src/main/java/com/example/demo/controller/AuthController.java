@@ -1,11 +1,3 @@
-// package com.example.demo.controller;
-
-// public class AuthController {
-    
-// }
-
-
-
 package com.example.demo.controller;
 
 import com.example.demo.entity.User;
