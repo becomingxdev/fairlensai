@@ -7,6 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import UploadDataset from "./pages/UploadDataset";
 import Reports from "./pages/Reports";
 import Recommendations from "./pages/Recommendations";
+import AuditDetail from "./pages/AuditDetail";
 import Settings from "./pages/Settings";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -52,6 +53,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <Recommendations />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/audit/:id" 
+                element={
+                  <ProtectedRoute>
+                    <AuditDetail />
                   </ProtectedRoute>
                 } 
               />

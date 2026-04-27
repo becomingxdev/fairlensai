@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import { useAccessibility } from '../contexts/AccessibilityContext';
+import { useAuth } from '../contexts/AuthContext';
 
 const SettingsPage = () => {
   const { theme, setTheme } = useTheme();
@@ -161,69 +162,67 @@ const NotificationsTab = () => (
   </motion.div>
 );
 
-const WorkspaceTab = () => (
-  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-6">
-    <SectionCard title="Organization Details">
-      <div className="flex items-center gap-6 p-4 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-100 dark:border-slate-700/50">
-        <div className="w-16 h-16 bg-indigo-600 rounded-2xl flex items-center justify-center text-white font-black text-2xl shadow-lg">CX</div>
-        <div className="flex-1">
-          <p className="text-slate-900 dark:text-white font-bold">Team Cyphx</p>
-          <p className="text-xs text-slate-500 uppercase tracking-widest font-black">Pro Workspace</p>
+const WorkspaceTab = () => {
+  const { user } = useAuth();
+  return (
+    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-6">
+      <SectionCard title="Organization Details">
+        <div className="flex items-center gap-6 p-4 bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-slate-100 dark:border-slate-700/50">
+          <div className="w-16 h-16 bg-indigo-600 rounded-2xl flex items-center justify-center text-white font-black text-2xl shadow-lg">
+            {user?.displayName?.charAt(0) || 'U'}
+          </div>
+          <div className="flex-1">
+            <p className="text-slate-900 dark:text-white font-bold">{user?.displayName || 'Personal Workspace'}</p>
+            <p className="text-xs text-slate-500 uppercase tracking-widest font-black">Standard Workspace</p>
+          </div>
+          <button className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline">Manage Account</button>
         </div>
-        <button className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline">Edit Workspace</button>
-      </div>
-    </SectionCard>
-    <SectionCard title="Data Connectivity">
-      <div className="space-y-4">
-        <StatusItem icon={<Database />} label="PostgreSQL Main" status="Connected" color="text-emerald-600 dark:text-emerald-500" />
-        <StatusItem icon={<Globe />} label="Cloud API" status="Idle" color="text-slate-500" />
-      </div>
-    </SectionCard>
-    <SectionCard title="Team Members">
-      <div className="flex -space-x-3 mb-4">
-        {['M', 'K', 'P'].map((init, i) => (
-          <div key={i} className="w-10 h-10 rounded-full border-4 border-white dark:border-[#070a13] bg-indigo-500 flex items-center justify-center text-xs font-bold text-white uppercase">{init}</div>
-        ))}
-        <div className="w-10 h-10 rounded-full border-4 border-white dark:border-[#070a13] bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-xs font-bold text-slate-600 dark:text-slate-400">+2</div>
-      </div>
-      <button className="flex items-center gap-2 text-sm font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300">
-        <Users size={16} /> Manage Team Permissions
-      </button>
-    </SectionCard>
-  </motion.div>
-);
+      </SectionCard>
+      <SectionCard title="Data Connectivity">
+        <div className="space-y-4">
+          <StatusItem icon={<Database />} label="Built-in H2 Engine" status="Running" color="text-emerald-600 dark:text-emerald-500" />
+          <StatusItem icon={<Globe />} label="Firebase Auth" status="Active" color="text-emerald-600 dark:text-emerald-500" />
+        </div>
+      </SectionCard>
+    </motion.div>
+  );
+};
 
-const SecurityTab = () => (
-  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-6">
-    <SectionCard title="Authentication">
-      <div className="space-y-6">
-        <div className="flex justify-between items-center p-4 bg-indigo-50 dark:bg-indigo-500/5 border border-indigo-100 dark:border-indigo-500/20 rounded-2xl">
+const SecurityTab = () => {
+  const { user } = useAuth();
+  const browserInfo = navigator.userAgent.split(') ')[0].split(' (')[1] || "Modern Browser";
+
+  return (
+    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-6">
+      <SectionCard title="Authentication">
+        <div className="space-y-6">
+          <div className="flex justify-between items-center p-4 bg-indigo-50 dark:bg-indigo-500/5 border border-indigo-100 dark:border-indigo-500/20 rounded-2xl">
+            <div className="flex gap-4">
+              <ShieldCheck className="text-indigo-600 dark:text-indigo-400" />
+              <div>
+                <p className="text-sm font-bold text-slate-900 dark:text-white">Two-Factor Authentication</p>
+                <p className="text-xs text-slate-500">Adds an extra layer of security to your audit logs.</p>
+              </div>
+            </div>
+            <button className="bg-slate-200 dark:bg-slate-800 px-4 py-2 rounded-xl text-xs font-bold text-slate-500 cursor-not-allowed">Coming Soon</button>
+          </div>
+          <ActionRow icon={<Key />} title="Registered Email" desc={user?.email || 'No email found'} action="Update" />
+        </div>
+      </SectionCard>
+      <SectionCard title="Active Session">
+        <div className="p-4 bg-slate-50 dark:bg-slate-800/30 rounded-2xl flex justify-between items-center border border-slate-100 dark:border-slate-700/50">
           <div className="flex gap-4">
-            <ShieldCheck className="text-indigo-600 dark:text-indigo-400" />
+            <MonitorIcon className="text-slate-400" />
             <div>
-              <p className="text-sm font-bold text-slate-900 dark:text-white">Two-Factor Authentication</p>
-              <p className="text-xs text-slate-500">Adds an extra layer of security to your audit logs.</p>
+              <p className="text-sm font-bold text-slate-900 dark:text-white">{browserInfo}</p>
+              <p className="text-xs text-emerald-600 dark:text-emerald-500 font-bold">Current Active Session</p>
             </div>
           </div>
-          <button className="bg-indigo-600 px-4 py-2 rounded-xl text-xs font-bold text-white shadow-md">Enable</button>
         </div>
-        <ActionRow icon={<Key />} title="Password" desc="Last changed 3 months ago" action="Change" />
-      </div>
-    </SectionCard>
-    <SectionCard title="Active Sessions">
-      <div className="p-4 bg-slate-50 dark:bg-slate-800/30 rounded-2xl flex justify-between items-center border border-slate-100 dark:border-slate-700/50">
-        <div className="flex gap-4">
-          <MonitorIcon className="text-slate-400" />
-          <div>
-            <p className="text-sm font-bold text-slate-900 dark:text-white">MacBook Pro — Chrome</p>
-            <p className="text-xs text-emerald-600 dark:text-emerald-500 font-bold">Current Session (Amaravati, India)</p>
-          </div>
-        </div>
-        <button className="text-xs font-bold text-red-600 dark:text-red-400 hover:underline">Revoke</button>
-      </div>
-    </SectionCard>
-  </motion.div>
-);
+      </SectionCard>
+    </motion.div>
+  );
+};
 
 /* --- REUSABLE UI COMPONENTS --- */
 const SectionCard = ({ title, children }: { title: string, children: React.ReactNode }) => (

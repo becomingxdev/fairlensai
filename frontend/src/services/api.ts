@@ -63,6 +63,15 @@ export interface Distribution {
   avgScoreByAttribute: Record<string, number>;
 }
 
+export interface Recommendation {
+  priority: 'Low' | 'Medium' | 'High' | 'Critical';
+  reportName: string;
+  action: string;
+  reasoning: string;
+  date: string;
+  reportId: number;
+}
+
 export default api;
 
 export const biasService = {
@@ -98,5 +107,17 @@ export const dashboardService = {
   getRecentReports: () => api.get<RecentReport[]>('/dashboard/recent'),
   getTrends: () => api.get<TrendData>('/dashboard/trends'),
   getDistribution: () => api.get<Distribution>('/dashboard/distribution'),
+};
+
+export const reportService = {
+  getAll: () => api.get<any[]>('/reports'),
+  getById: (id: number) => api.get<any>(`/reports/${id}`),
+  delete: (id: number) => api.delete(`/reports/${id}`),
+  getLatest: () => api.get<any>('/reports/latest'),
+  export: (id: number) => api.get(`/reports/export/${id}`, { responseType: 'blob' }),
+};
+
+export const recommendationService = {
+  getAll: () => api.get<Recommendation[]>('/recommendations'),
 };
 

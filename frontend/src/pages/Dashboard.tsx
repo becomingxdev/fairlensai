@@ -3,7 +3,7 @@ import Sidebar from "../components/Sidebar";
 import FairnessProgress from "../components/FairnessProgress";
 import NotificationPopover from "../components/NotificationPopover";
 import { TrendingUp, AlertCircle, ShieldCheck, Bell, Loader2, Database, Upload, ChevronRight } from "lucide-react";
-import { dashboardService } from "../services/api";
+import { dashboardService, reportService } from "../services/api";
 import type { DashboardSummary, RecentReport, Distribution } from "../services/api";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -102,6 +102,26 @@ const Dashboard = () => {
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
   const [recentReports, setRecentReports] = useState<RecentReport[]>([]);
   const [distribution, setDistribution] = useState<Distribution | null>(null);
+  const [isExporting, setIsExporting] = useState(false);
+
+  const handleExportLatest = async () => {
+    setIsExporting(true);
+    try {
+      const latest = await reportService.getLatest();
+      const response = await reportService.export(latest.data.id);
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `latest_audit_${latest.data.id}.json`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      alert("No audits found to export or export failed.");
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -200,9 +220,12 @@ const Dashboard = () => {
 
             <button
               id="export-audit-btn"
-              className="bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 px-5 py-2.5 rounded-xl font-semibold text-slate-700 dark:text-slate-200 shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 hover:shadow-md transition-all duration-200"
+              disabled={isExporting}
+              onClick={handleExportLatest}
+              className="bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 px-5 py-2.5 rounded-xl font-semibold text-slate-700 dark:text-slate-200 shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 hover:shadow-md transition-all duration-200 flex items-center gap-2 disabled:opacity-50"
             >
-              Export Audit ↗
+              {isExporting ? <Loader2 className="animate-spin" size={16} /> : null}
+              {isExporting ? 'Exporting...' : 'Export Audit ↗'}
             </button>
           </div>
         </header>

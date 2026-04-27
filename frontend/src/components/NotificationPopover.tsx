@@ -14,36 +14,6 @@ interface NotificationPopoverProps {
 }
 
 const NotificationPopover = ({ isOpen, onClose }: NotificationPopoverProps) => {
-  const notifications = [
-    {
-      id: 1,
-      type: 'bias',
-      title: 'High Bias Detected',
-      msg: 'Hiring_Data_v2.csv shows 22% disparity in Region attribute.',
-      time: '2m ago',
-      icon: <ShieldAlert className="text-amber-500" />,
-      color: 'border-amber-200 dark:border-amber-900/50 bg-amber-50/50 dark:bg-amber-900/20'
-    },
-    {
-      id: 2,
-      type: 'success',
-      title: 'Audit Complete',
-      msg: 'Promotion_Equity_Report is now ready for download.',
-      time: '1h ago',
-      icon: <CheckCircle2 className="text-emerald-500" />,
-      color: 'border-emerald-200 dark:border-emerald-900/50 bg-emerald-50/50 dark:bg-emerald-900/20'
-    },
-    {
-      id: 3,
-      type: 'info',
-      title: 'System Update',
-      msg: 'FairLens AI now supports EEOC 2026 compliance standards.',
-      time: '3h ago',
-      icon: <Info className="text-blue-500" />,
-      color: 'border-blue-200 dark:border-blue-900/50 bg-blue-50/50 dark:bg-blue-900/20'
-    }
-  ];
-
   return (
     <AnimatePresence>
       {isOpen && (
@@ -62,46 +32,23 @@ const NotificationPopover = ({ isOpen, onClose }: NotificationPopoverProps) => {
             <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-white/50 dark:bg-slate-800/50">
               <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
                 Notifications
-                <span className="bg-indigo-600 text-white text-[10px] px-1.5 py-0.5 rounded-full">3</span>
               </h3>
               <button onClick={onClose} className="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors">
                 <X size={18} className="text-slate-400 dark:text-slate-500" />
               </button>
             </div>
 
-            {/* Notification List */}
-            <div className="max-h-[400px] overflow-y-auto p-4 space-y-3 custom-scrollbar">
-              {notifications.map((n) => (
-                <div 
-                  key={n.id} 
-                  className={`p-4 rounded-2xl border transition-all hover:shadow-md cursor-pointer group ${n.color}`}
-                >
-                  <div className="flex gap-4">
-                    <div className="mt-1 shrink-0">{n.icon}</div>
-                    <div className="flex-1">
-                      <div className="flex justify-between items-start mb-1">
-                        <p className="text-sm font-bold text-slate-800 dark:text-slate-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                          {n.title}
-                        </p>
-                        <span className="text-[10px] text-slate-400 dark:text-slate-500 font-bold flex items-center gap-1 uppercase">
-                          <Clock size={10} />
-                          {n.time}
-                        </span>
-                      </div>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-2">
-                        {n.msg}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ))}
+            {/* Empty State */}
+            <div className="p-12 text-center">
+              <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4 border border-slate-100 dark:border-slate-700">
+                <CheckCircle2 size={32} className="text-slate-300 dark:text-slate-600" />
+              </div>
+              <p className="text-sm font-bold text-slate-900 dark:text-white">All caught up!</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">No new notifications at this time.</p>
             </div>
 
             {/* Footer */}
-            <button className="w-full p-4 bg-slate-50 dark:bg-slate-800/50 text-indigo-600 dark:text-indigo-400 text-xs font-bold hover:bg-indigo-50 dark:hover:bg-slate-700 transition-colors flex items-center justify-center gap-2 border-t border-slate-100 dark:border-slate-800">
-              View all activity
-              <ArrowRight size={14} />
-            </button>
+            <div className="p-4 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800" />
           </motion.div>
         </>
       )}

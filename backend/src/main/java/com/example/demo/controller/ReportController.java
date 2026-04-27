@@ -1,20 +1,13 @@
-// package com.example.demo.controller;
-
-// public class ReportController {
-    
-// }
-
-
 package com.example.demo.controller;
 
 import com.example.demo.entity.AuditReport;
 import com.example.demo.repository.AuditReportRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/reports")
@@ -26,34 +19,66 @@ public class ReportController {
         this.auditReportRepository = auditReportRepository;
     }
 
-    /**
-     * Requirement: list reports [cite: 18]
-     * Route: GET /api/reports [cite: 60]
-     */
-    @GetMapping
-    public ResponseEntity<List<AuditReport>> getAllReports() {
-        // Extract UID to ensure users only see their own history [cite: 6, 96]
-        String uid = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return ResponseEntity.ok(auditReportRepository.findByUserId(uid));
+    private String getAuthenticatedUserId() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof String) {
+            return (String) principal;
+        }
+        return null;
     }
 
-    /**
-     * Requirement: download report [cite: 19]
-     * Route: GET /api/report/{id} [cite: 61]
-     */
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getReportById(@PathVariable Long id) {
-        String uid = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    @GetMapping
+    public ResponseEntity<List<AuditReport>> getAllReports() {
+        String userId = getAuthenticatedUserId();
+        if (userId == null) return ResponseEntity.status(401).build();
+        return ResponseEntity.ok(auditReportRepository.findByUserId(userId));
+    }
 
-        return auditReportRepository.findById(id)
-                .map(report -> {
-                    // Security Check: Protected API logic
-                    if (!report.getUserId().equals(uid)) {
-                        return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                                .body("Access Denied: You do not own this report.");
-                    }
-                    return ResponseEntity.ok(report);
-                })
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    @GetMapping("/{id}")
+    public ResponseEntity<AuditReport> getReport(@PathVariable Long id) {
+        String userId = getAuthenticatedUserId();
+        Optional<AuditReport> report = auditReportRepository.findById(id);
+        
+        if (report.isPresent() && report.get().getUserId().equals(userId)) {
+            return ResponseEntity.ok(report.get());
+        }
+        return ResponseEntity.status(403).build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteReport(@PathVariable Long id) {
+        String userId = getAuthenticatedUserId();
+        Optional<AuditReport> report = auditReportRepository.findById(id);
+        
+        if (report.isPresent() && report.get().getUserId().equals(userId)) {
+            auditReportRepository.deleteById(id);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.status(403).build();
+    }
+
+    @GetMapping("/latest")
+    public ResponseEntity<AuditReport> getLatestReport() {
+        String userId = getAuthenticatedUserId();
+        List<AuditReport> reports = auditReportRepository.findByUserId(userId);
+        if (reports.isEmpty()) return ResponseEntity.notFound().build();
+        
+        return ResponseEntity.ok(reports.stream()
+                .max((r1, r2) -> r1.getCreatedAt().compareTo(r2.getCreatedAt()))
+                .get());
+    }
+
+    @GetMapping("/export/{id}")
+    public ResponseEntity<String> exportReport(@PathVariable Long id) {
+        String userId = getAuthenticatedUserId();
+        Optional<AuditReport> report = auditReportRepository.findById(id);
+        
+        if (report.isPresent() && report.get().getUserId().equals(userId)) {
+            // Return JSON details as a downloadable string
+            return ResponseEntity.ok()
+                    .header("Content-Disposition", "attachment; filename=\"report_" + id + ".json\"")
+                    .body(report.get().getDetailsJson());
+        }
+        return ResponseEntity.status(403).build();
     }
 }
