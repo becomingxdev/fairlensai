@@ -1,8 +1,501 @@
-gender,age,region,qualification,selected / rejected
-Male,28,North,Bachelors,selected
-Female,32,South,Masters,selected
-Male,45,East,Bachelors,rejected
-Female,24,West,Bachelors,rejected
-Male,35,North,PhD,selected
-Female,29,South,Bachelors,selected
-Male,50,West,Masters,rejected
+gender,age,region,qualification,Interview_Score,Technical_Skill_Level,Years_of_Exp,selected / rejected
+Female,59,South,Bachelors,66,Junior,34,selected
+Prefer not to say,43,South,PhD,83,Expert,6,selected
+Non-binary,43,East,High School,61,Junior,5,rejected
+Non-binary,42,West,PhD,70,Expert,21,rejected
+Prefer not to say,40,North,Diploma,83,Junior,21,rejected
+Male,53,Central,Bachelors,91,Expert,7,selected
+Non-binary,42,South,Masters,96,Expert,35,rejected
+Female,47,East,Bachelors,88,Junior,0,selected
+Male,26,East,Bachelors,95,Mid,16,rejected
+Prefer not to say,53,North,Diploma,85,Senior,17,rejected
+Non-binary,23,Central,Bachelors,66,Expert,7,selected
+Female,44,Central,Diploma,88,Mid,24,rejected
+Male,36,West,PhD,77,Expert,16,rejected
+Prefer not to say,30,South,High School,65,Expert,34,selected
+Prefer not to say,43,Central,Masters,64,Junior,0,rejected
+Male,56,North,PhD,76,Senior,34,selected
+Non-binary,22,South,High School,56,Expert,24,selected
+Prefer not to say,26,Central,Bachelors,74,Senior,7,selected
+Non-binary,49,East,Diploma,66,Mid,18,selected
+Prefer not to say,55,South,Bachelors,85,Expert,21,rejected
+Female,57,Central,High School,92,Junior,32,rejected
+Non-binary,29,North,PhD,75,Senior,17,selected
+Male,41,South,Masters,62,Expert,12,rejected
+Male,42,East,PhD,61,Senior,22,selected
+Male,40,North,PhD,59,Junior,13,selected
+Prefer not to say,21,South,PhD,59,Mid,2,selected
+Prefer not to say,56,South,Masters,76,Junior,3,selected
+Prefer not to say,28,East,Bachelors,78,Expert,34,rejected
+Prefer not to say,60,South,PhD,99,Senior,15,selected
+Prefer not to say,40,Central,Masters,94,Senior,13,rejected
+Female,48,North,Diploma,70,Senior,2,rejected
+Non-binary,40,West,High School,67,Expert,32,selected
+Female,57,North,Diploma,76,Junior,31,rejected
+Non-binary,22,Central,PhD,50,Expert,2,selected
+Non-binary,22,West,PhD,55,Junior,26,selected
+Male,22,Central,Bachelors,62,Mid,12,selected
+Prefer not to say,30,Central,Masters,56,Mid,34,rejected
+Male,40,South,Diploma,99,Mid,14,selected
+Non-binary,48,West,Bachelors,87,Junior,17,selected
+Female,42,Central,Masters,54,Expert,20,selected
+Prefer not to say,57,East,Bachelors,67,Junior,2,selected
+Non-binary,33,Central,Masters,50,Expert,0,rejected
+Non-binary,41,East,Masters,95,Expert,24,selected
+Female,49,West,High School,70,Senior,32,rejected
+Female,31,Central,Masters,57,Expert,10,rejected
+Male,45,West,Bachelors,66,Senior,11,selected
+Prefer not to say,57,South,PhD,64,Junior,6,rejected
+Non-binary,40,East,Bachelors,90,Expert,2,rejected
+Non-binary,21,East,Bachelors,79,Expert,31,rejected
+Non-binary,29,East,Diploma,56,Junior,19,selected
+Male,58,South,High School,91,Junior,5,selected
+Prefer not to say,57,Central,High School,100,Senior,22,selected
+Non-binary,32,East,Masters,79,Expert,11,rejected
+Non-binary,36,North,High School,65,Senior,3,rejected
+Non-binary,56,South,Bachelors,71,Senior,26,selected
+Non-binary,44,Central,Masters,86,Expert,17,rejected
+Non-binary,41,South,Masters,54,Junior,2,selected
+Non-binary,35,Central,Diploma,92,Senior,22,selected
+Male,22,East,Masters,71,Expert,31,rejected
+Prefer not to say,48,Central,High School,54,Mid,9,rejected
+Non-binary,46,Central,Bachelors,59,Expert,5,rejected
+Non-binary,51,Central,Diploma,100,Junior,20,selected
+Prefer not to say,22,North,Masters,89,Senior,6,rejected
+Female,58,Central,Bachelors,80,Expert,34,selected
+Prefer not to say,44,North,High School,63,Senior,22,rejected
+Prefer not to say,51,South,Diploma,77,Senior,13,selected
+Female,24,West,Bachelors,51,Expert,16,selected
+Prefer not to say,30,West,Diploma,77,Junior,6,rejected
+Male,38,West,Masters,54,Junior,8,rejected
+Male,37,Central,Bachelors,79,Senior,26,rejected
+Non-binary,33,West,PhD,93,Junior,29,rejected
+Female,26,West,Bachelors,89,Junior,11,selected
+Non-binary,60,Central,Bachelors,53,Junior,21,rejected
+Non-binary,50,North,Bachelors,54,Expert,16,rejected
+Male,58,West,Bachelors,98,Expert,16,rejected
+Female,52,South,Diploma,84,Expert,2,selected
+Female,46,Central,Bachelors,58,Senior,28,selected
+Female,55,East,PhD,68,Mid,27,rejected
+Male,28,Central,Diploma,78,Junior,20,selected
+Non-binary,43,North,Masters,98,Junior,14,rejected
+Prefer not to say,45,South,Diploma,75,Senior,8,selected
+Non-binary,51,West,High School,68,Expert,2,selected
+Female,28,Central,Masters,52,Senior,26,rejected
+Prefer not to say,50,Central,Masters,68,Mid,8,rejected
+Male,33,West,Diploma,66,Senior,14,rejected
+Female,25,East,Bachelors,99,Expert,8,selected
+Prefer not to say,36,East,Diploma,77,Mid,23,rejected
+Female,43,West,Diploma,74,Junior,5,selected
+Male,40,South,Masters,67,Mid,33,selected
+Female,25,Central,High School,54,Mid,8,rejected
+Female,35,West,High School,100,Mid,32,selected
+Female,31,North,High School,89,Expert,30,rejected
+Female,60,South,Diploma,59,Junior,26,selected
+Female,53,Central,Bachelors,99,Mid,25,selected
+Non-binary,21,West,Diploma,84,Junior,14,rejected
+Female,58,North,Masters,51,Expert,30,selected
+Female,59,West,Masters,50,Junior,26,selected
+Non-binary,33,South,Bachelors,71,Junior,10,selected
+Non-binary,42,South,High School,73,Mid,10,selected
+Male,34,West,High School,66,Mid,25,rejected
+Prefer not to say,24,East,High School,92,Mid,27,selected
+Female,23,East,Masters,78,Expert,2,rejected
+Prefer not to say,51,Central,PhD,62,Senior,34,rejected
+Prefer not to say,36,East,Masters,76,Senior,14,rejected
+Female,26,Central,High School,84,Expert,7,selected
+Prefer not to say,41,East,High School,77,Mid,32,selected
+Female,53,West,Diploma,95,Junior,17,selected
+Prefer not to say,29,North,Masters,76,Expert,8,selected
+Non-binary,47,North,Bachelors,97,Junior,5,rejected
+Female,45,Central,Bachelors,66,Senior,3,selected
+Non-binary,52,Central,Diploma,92,Mid,32,selected
+Non-binary,21,North,PhD,96,Mid,9,rejected
+Male,32,North,High School,70,Junior,11,rejected
+Prefer not to say,49,South,Diploma,96,Expert,5,rejected
+Non-binary,39,Central,Masters,59,Mid,22,rejected
+Non-binary,48,West,PhD,87,Junior,16,rejected
+Male,34,South,Diploma,100,Senior,8,selected
+Female,44,Central,PhD,61,Senior,7,selected
+Non-binary,43,East,PhD,56,Expert,1,selected
+Female,39,West,High School,78,Mid,24,rejected
+Prefer not to say,41,East,High School,54,Expert,31,selected
+Non-binary,40,Central,PhD,65,Expert,35,selected
+Male,33,West,Bachelors,56,Expert,9,selected
+Male,32,South,High School,77,Junior,5,rejected
+Prefer not to say,42,Central,Bachelors,93,Expert,2,rejected
+Non-binary,42,South,PhD,70,Expert,1,selected
+Prefer not to say,46,South,Bachelors,91,Mid,19,selected
+Non-binary,37,West,Masters,70,Junior,19,rejected
+Female,32,Central,Diploma,75,Mid,2,rejected
+Non-binary,52,North,High School,88,Expert,15,selected
+Male,50,North,Bachelors,99,Junior,29,selected
+Non-binary,29,South,Bachelors,95,Mid,9,rejected
+Non-binary,53,West,Masters,97,Junior,12,selected
+Female,56,South,Bachelors,64,Expert,11,selected
+Female,60,South,PhD,55,Junior,32,selected
+Male,55,Central,PhD,53,Senior,29,rejected
+Prefer not to say,52,Central,Masters,58,Mid,21,selected
+Prefer not to say,23,North,Diploma,50,Senior,28,selected
+Male,42,West,High School,95,Expert,0,rejected
+Prefer not to say,30,South,PhD,61,Senior,6,selected
+Female,54,West,High School,69,Junior,25,rejected
+Non-binary,39,Central,Masters,71,Expert,28,selected
+Non-binary,48,North,Bachelors,60,Junior,20,rejected
+Male,42,North,PhD,70,Mid,23,rejected
+Non-binary,52,Central,Diploma,78,Junior,18,rejected
+Prefer not to say,36,East,Masters,71,Mid,21,rejected
+Male,43,Central,High School,100,Mid,19,selected
+Non-binary,56,South,High School,61,Senior,35,rejected
+Non-binary,35,West,High School,96,Mid,24,selected
+Prefer not to say,57,North,Bachelors,79,Mid,34,selected
+Non-binary,29,Central,Bachelors,66,Mid,19,selected
+Non-binary,46,South,Diploma,54,Expert,3,rejected
+Male,39,West,Bachelors,68,Junior,27,rejected
+Non-binary,36,North,Diploma,57,Mid,15,rejected
+Male,50,East,PhD,82,Mid,15,selected
+Prefer not to say,32,South,PhD,71,Mid,22,selected
+Male,47,West,Bachelors,70,Junior,27,selected
+Male,37,North,PhD,81,Senior,35,selected
+Prefer not to say,26,East,Diploma,71,Junior,13,rejected
+Non-binary,52,East,Diploma,55,Mid,5,selected
+Prefer not to say,35,West,Bachelors,51,Mid,17,selected
+Non-binary,27,South,Diploma,84,Senior,7,rejected
+Female,23,West,PhD,58,Junior,9,rejected
+Prefer not to say,31,South,PhD,95,Expert,31,rejected
+Non-binary,53,Central,High School,72,Junior,26,selected
+Prefer not to say,38,Central,Bachelors,91,Senior,14,selected
+Non-binary,21,Central,Diploma,68,Junior,21,rejected
+Prefer not to say,58,Central,Bachelors,66,Expert,14,rejected
+Non-binary,26,North,Diploma,83,Expert,19,selected
+Prefer not to say,59,Central,Masters,100,Mid,16,selected
+Female,51,East,Bachelors,50,Junior,4,selected
+Female,56,West,High School,71,Mid,30,rejected
+Prefer not to say,30,West,Bachelors,80,Mid,20,rejected
+Male,60,South,Diploma,97,Expert,8,rejected
+Non-binary,37,North,High School,61,Senior,16,rejected
+Non-binary,46,North,High School,60,Expert,16,rejected
+Male,38,North,PhD,54,Expert,17,selected
+Female,47,East,Diploma,93,Mid,0,rejected
+Prefer not to say,36,West,Diploma,73,Senior,20,selected
+Male,53,Central,Diploma,56,Senior,23,rejected
+Female,45,Central,PhD,60,Mid,5,selected
+Female,24,North,Bachelors,90,Senior,19,selected
+Prefer not to say,30,East,High School,84,Mid,9,rejected
+Prefer not to say,45,South,PhD,58,Junior,31,rejected
+Prefer not to say,24,South,Diploma,91,Mid,28,selected
+Non-binary,24,West,Bachelors,79,Expert,23,rejected
+Prefer not to say,27,North,Masters,77,Expert,23,selected
+Female,35,Central,Masters,55,Mid,6,selected
+Male,57,South,Masters,62,Senior,4,rejected
+Non-binary,59,East,Bachelors,80,Expert,4,selected
+Male,52,West,Diploma,84,Senior,4,rejected
+Non-binary,42,East,Masters,59,Mid,2,selected
+Non-binary,50,West,Masters,54,Mid,24,rejected
+Non-binary,28,East,PhD,71,Senior,32,selected
+Male,46,West,Bachelors,92,Expert,4,selected
+Non-binary,48,Central,Bachelors,98,Junior,0,rejected
+Male,27,West,Bachelors,76,Mid,33,rejected
+Prefer not to say,30,East,PhD,75,Expert,17,selected
+Prefer not to say,48,East,Diploma,88,Mid,7,rejected
+Prefer not to say,38,South,Masters,72,Mid,3,rejected
+Female,40,West,Bachelors,56,Junior,13,selected
+Non-binary,47,South,High School,54,Senior,10,selected
+Female,26,North,Diploma,80,Expert,27,rejected
+Non-binary,53,Central,High School,86,Mid,10,selected
+Male,53,West,Bachelors,85,Junior,9,selected
+Male,49,East,High School,94,Expert,21,selected
+Male,38,North,High School,89,Mid,14,selected
+Prefer not to say,43,Central,PhD,64,Mid,22,rejected
+Prefer not to say,48,South,Masters,87,Expert,16,selected
+Male,42,Central,Bachelors,62,Senior,21,selected
+Male,56,Central,Diploma,71,Mid,20,selected
+Non-binary,58,East,High School,57,Junior,16,selected
+Female,23,West,Masters,93,Expert,26,rejected
+Non-binary,50,Central,Bachelors,93,Junior,2,rejected
+Male,25,North,Masters,51,Junior,34,selected
+Non-binary,34,South,Diploma,82,Mid,12,selected
+Male,59,South,PhD,94,Mid,30,selected
+Prefer not to say,33,South,PhD,84,Senior,25,rejected
+Male,30,North,Bachelors,53,Junior,13,rejected
+Prefer not to say,41,Central,Bachelors,62,Junior,20,rejected
+Male,38,East,PhD,67,Mid,19,selected
+Prefer not to say,24,West,PhD,95,Senior,34,selected
+Non-binary,60,East,Masters,59,Junior,2,selected
+Female,54,East,PhD,93,Mid,17,rejected
+Prefer not to say,59,North,Diploma,83,Expert,3,selected
+Female,52,South,Diploma,69,Senior,14,selected
+Non-binary,39,North,PhD,58,Senior,0,rejected
+Male,47,South,Masters,58,Junior,14,rejected
+Non-binary,58,South,Bachelors,79,Mid,5,rejected
+Male,25,South,Masters,77,Expert,9,selected
+Female,23,North,Bachelors,71,Expert,29,rejected
+Non-binary,54,South,PhD,93,Junior,9,rejected
+Prefer not to say,48,North,PhD,82,Junior,34,rejected
+Male,48,North,Bachelors,92,Mid,35,rejected
+Prefer not to say,27,South,Bachelors,97,Mid,33,selected
+Prefer not to say,53,West,PhD,85,Junior,20,rejected
+Male,38,North,High School,62,Junior,8,rejected
+Female,26,Central,Masters,99,Mid,25,selected
+Prefer not to say,43,North,PhD,64,Senior,11,rejected
+Prefer not to say,31,North,Diploma,93,Senior,21,selected
+Male,54,Central,PhD,51,Senior,3,selected
+Female,43,North,High School,75,Expert,21,rejected
+Female,43,West,Bachelors,90,Senior,3,rejected
+Female,58,South,PhD,65,Senior,21,rejected
+Prefer not to say,43,West,PhD,62,Mid,25,rejected
+Non-binary,43,South,Bachelors,75,Expert,25,selected
+Male,30,East,High School,62,Expert,0,rejected
+Prefer not to say,49,West,Diploma,82,Junior,2,selected
+Prefer not to say,58,Central,PhD,96,Mid,13,rejected
+Male,22,West,Masters,59,Expert,10,rejected
+Female,22,West,Diploma,76,Mid,21,selected
+Prefer not to say,43,East,Bachelors,60,Mid,20,selected
+Male,30,North,Diploma,79,Expert,21,rejected
+Male,38,Central,Bachelors,70,Senior,20,rejected
+Prefer not to say,24,North,Bachelors,56,Junior,32,rejected
+Non-binary,40,Central,High School,99,Expert,23,selected
+Female,55,East,PhD,92,Mid,4,rejected
+Prefer not to say,47,West,Masters,54,Expert,30,selected
+Non-binary,50,South,Diploma,90,Mid,7,rejected
+Prefer not to say,46,East,Masters,98,Junior,28,rejected
+Female,37,East,Diploma,61,Expert,14,rejected
+Non-binary,47,West,Bachelors,92,Mid,26,rejected
+Male,34,South,High School,64,Senior,30,selected
+Female,34,East,Bachelors,77,Senior,15,rejected
+Prefer not to say,35,Central,Masters,75,Junior,20,selected
+Non-binary,32,South,Masters,94,Junior,35,rejected
+Male,34,Central,Masters,61,Mid,22,selected
+Female,50,Central,PhD,81,Junior,34,selected
+Male,55,North,High School,64,Senior,35,selected
+Non-binary,47,East,PhD,84,Senior,2,rejected
+Male,31,East,Masters,99,Junior,5,selected
+Male,21,South,High School,50,Expert,11,selected
+Prefer not to say,31,East,Bachelors,53,Mid,18,selected
+Prefer not to say,24,North,PhD,61,Senior,15,rejected
+Male,28,Central,PhD,74,Mid,3,selected
+Prefer not to say,29,Central,Bachelors,74,Expert,30,selected
+Female,30,South,Bachelors,74,Senior,3,rejected
+Prefer not to say,36,North,Bachelors,90,Junior,13,rejected
+Non-binary,48,East,Bachelors,86,Senior,32,selected
+Female,38,North,PhD,60,Senior,12,selected
+Male,30,East,Bachelors,50,Senior,32,selected
+Prefer not to say,28,Central,Masters,56,Senior,34,selected
+Non-binary,28,West,PhD,87,Mid,32,selected
+Non-binary,55,West,PhD,71,Mid,24,selected
+Female,40,North,Bachelors,81,Senior,13,rejected
+Female,50,East,High School,56,Senior,23,selected
+Male,60,East,Bachelors,86,Senior,22,rejected
+Male,56,West,Masters,88,Junior,35,rejected
+Female,41,Central,High School,87,Mid,24,rejected
+Prefer not to say,36,North,Diploma,80,Mid,22,selected
+Female,48,East,High School,69,Expert,17,selected
+Non-binary,49,West,High School,84,Senior,27,selected
+Prefer not to say,57,East,High School,80,Mid,28,selected
+Prefer not to say,60,South,Diploma,100,Mid,0,selected
+Male,21,South,PhD,84,Expert,23,selected
+Female,35,West,Bachelors,84,Junior,29,rejected
+Female,34,North,High School,65,Mid,31,rejected
+Non-binary,51,West,PhD,92,Expert,2,rejected
+Female,41,North,Bachelors,74,Mid,5,rejected
+Non-binary,40,Central,Masters,80,Mid,11,rejected
+Female,50,Central,Diploma,83,Senior,5,rejected
+Prefer not to say,43,West,PhD,56,Mid,7,selected
+Non-binary,25,East,High School,96,Senior,35,rejected
+Non-binary,37,West,Masters,95,Junior,27,rejected
+Male,43,West,Bachelors,54,Expert,26,selected
+Non-binary,55,Central,Diploma,51,Expert,22,rejected
+Non-binary,58,Central,PhD,97,Junior,10,selected
+Prefer not to say,27,East,Bachelors,78,Junior,22,rejected
+Non-binary,50,South,PhD,95,Mid,19,rejected
+Female,51,South,PhD,77,Junior,4,rejected
+Female,37,West,PhD,62,Expert,0,selected
+Female,54,West,High School,58,Mid,15,rejected
+Prefer not to say,29,North,Bachelors,87,Senior,21,rejected
+Female,44,East,Bachelors,75,Senior,10,selected
+Non-binary,21,West,Diploma,60,Mid,5,rejected
+Prefer not to say,52,East,Masters,82,Expert,2,selected
+Male,47,South,Bachelors,77,Senior,21,rejected
+Prefer not to say,25,South,High School,58,Mid,24,rejected
+Prefer not to say,47,East,High School,60,Senior,17,selected
+Female,30,West,Masters,94,Junior,24,rejected
+Non-binary,23,South,PhD,61,Junior,14,selected
+Male,41,North,Diploma,82,Senior,0,rejected
+Male,47,West,High School,60,Senior,17,selected
+Non-binary,24,West,High School,62,Mid,33,rejected
+Non-binary,30,South,Masters,84,Senior,2,selected
+Male,31,South,PhD,84,Junior,5,rejected
+Non-binary,39,Central,High School,52,Senior,12,selected
+Female,25,Central,High School,63,Expert,17,selected
+Prefer not to say,27,West,PhD,96,Mid,21,rejected
+Male,35,West,Bachelors,67,Senior,31,rejected
+Non-binary,51,East,Diploma,83,Junior,27,selected
+Female,34,Central,Masters,97,Mid,17,selected
+Female,40,East,High School,55,Junior,14,rejected
+Male,45,South,Bachelors,94,Senior,33,selected
+Prefer not to say,23,North,High School,68,Senior,3,rejected
+Female,31,South,High School,64,Mid,4,rejected
+Female,37,West,Diploma,55,Expert,6,selected
+Female,45,Central,PhD,80,Senior,24,rejected
+Non-binary,39,Central,Bachelors,82,Senior,12,selected
+Non-binary,58,North,Bachelors,57,Mid,16,selected
+Male,28,South,High School,63,Junior,27,selected
+Female,43,South,High School,87,Junior,27,rejected
+Female,50,East,PhD,60,Mid,22,selected
+Female,48,East,Masters,71,Mid,20,rejected
+Male,23,South,Diploma,97,Junior,17,selected
+Female,31,East,PhD,68,Junior,26,selected
+Female,48,South,Bachelors,75,Junior,4,rejected
+Female,30,East,High School,53,Senior,0,selected
+Female,56,North,Diploma,90,Junior,1,selected
+Non-binary,32,Central,PhD,58,Junior,26,rejected
+Prefer not to say,32,South,High School,56,Senior,12,rejected
+Prefer not to say,36,South,PhD,83,Mid,6,rejected
+Female,53,Central,Masters,69,Expert,15,selected
+Female,45,North,PhD,89,Junior,1,rejected
+Female,55,West,Masters,92,Expert,12,selected
+Non-binary,31,North,PhD,81,Expert,8,selected
+Prefer not to say,53,Central,Bachelors,62,Mid,29,selected
+Non-binary,48,West,High School,93,Junior,10,selected
+Prefer not to say,22,Central,Bachelors,61,Junior,19,selected
+Female,48,South,PhD,73,Junior,27,rejected
+Male,38,North,High School,93,Senior,29,rejected
+Non-binary,53,South,High School,62,Mid,7,selected
+Non-binary,21,North,Diploma,86,Junior,9,rejected
+Female,53,East,Diploma,70,Senior,11,rejected
+Prefer not to say,26,North,Diploma,78,Senior,7,selected
+Male,39,West,PhD,53,Senior,8,selected
+Male,51,Central,PhD,93,Expert,35,selected
+Male,51,West,PhD,75,Expert,28,selected
+Prefer not to say,50,East,Bachelors,92,Expert,9,rejected
+Prefer not to say,42,North,Diploma,94,Mid,13,rejected
+Male,42,West,Masters,59,Junior,24,selected
+Prefer not to say,39,West,Diploma,72,Senior,33,rejected
+Prefer not to say,38,North,PhD,58,Senior,6,rejected
+Prefer not to say,52,East,Masters,79,Mid,32,selected
+Male,29,East,High School,68,Junior,9,selected
+Male,45,South,Masters,51,Junior,3,rejected
+Female,39,South,Bachelors,86,Expert,25,rejected
+Non-binary,21,East,PhD,96,Expert,32,selected
+Male,45,East,High School,52,Mid,10,rejected
+Non-binary,23,East,PhD,80,Expert,3,selected
+Non-binary,58,East,High School,93,Mid,35,selected
+Non-binary,57,South,Diploma,65,Junior,19,rejected
+Non-binary,34,West,Diploma,91,Expert,5,rejected
+Female,24,Central,Masters,99,Junior,23,rejected
+Female,32,Central,Diploma,78,Junior,31,rejected
+Female,51,Central,PhD,67,Expert,22,selected
+Non-binary,55,West,Masters,95,Expert,3,selected
+Male,27,Central,PhD,63,Senior,11,rejected
+Male,43,West,High School,96,Expert,14,selected
+Female,28,East,Diploma,64,Junior,8,rejected
+Male,34,South,High School,56,Senior,4,selected
+Prefer not to say,52,Central,Bachelors,89,Junior,16,rejected
+Prefer not to say,34,West,Masters,96,Mid,0,selected
+Female,29,North,Bachelors,81,Junior,19,rejected
+Male,23,East,Masters,55,Expert,27,rejected
+Non-binary,23,West,Diploma,75,Senior,22,selected
+Prefer not to say,49,South,PhD,63,Junior,20,selected
+Male,41,East,PhD,83,Junior,14,rejected
+Male,28,North,High School,99,Junior,14,selected
+Male,40,Central,PhD,75,Junior,34,rejected
+Prefer not to say,27,West,PhD,69,Senior,1,selected
+Male,27,East,Masters,67,Junior,22,rejected
+Non-binary,34,West,PhD,55,Mid,3,rejected
+Male,33,East,Diploma,83,Mid,25,rejected
+Female,56,Central,Masters,70,Junior,34,rejected
+Male,47,North,Bachelors,78,Junior,33,selected
+Prefer not to say,40,North,PhD,77,Junior,24,rejected
+Non-binary,41,Central,PhD,73,Expert,18,rejected
+Male,50,South,Diploma,73,Junior,19,selected
+Male,23,West,Bachelors,75,Senior,28,rejected
+Prefer not to say,28,West,Diploma,84,Mid,5,selected
+Prefer not to say,59,West,Diploma,81,Senior,9,rejected
+Female,26,West,High School,54,Junior,8,selected
+Female,50,Central,Diploma,73,Expert,24,rejected
+Non-binary,54,West,Masters,88,Expert,4,rejected
+Non-binary,42,Central,High School,61,Junior,5,selected
+Female,22,West,PhD,72,Junior,0,selected
+Prefer not to say,51,South,Diploma,51,Expert,27,rejected
+Female,30,Central,High School,85,Junior,7,rejected
+Prefer not to say,40,South,High School,63,Senior,24,selected
+Prefer not to say,26,North,PhD,94,Mid,10,selected
+Male,21,South,Diploma,97,Expert,26,selected
+Prefer not to say,31,East,Diploma,99,Expert,33,rejected
+Non-binary,29,South,Bachelors,86,Junior,25,rejected
+Non-binary,33,South,Masters,82,Senior,29,selected
+Female,47,East,High School,75,Junior,8,rejected
+Female,25,South,Diploma,65,Senior,1,selected
+Female,25,Central,High School,67,Mid,18,selected
+Female,59,West,PhD,86,Expert,17,selected
+Male,38,Central,PhD,63,Mid,20,selected
+Female,32,West,PhD,83,Mid,19,rejected
+Male,36,North,Diploma,94,Mid,16,rejected
+Female,51,North,PhD,57,Expert,6,rejected
+Prefer not to say,23,North,Bachelors,67,Expert,11,selected
+Male,21,East,High School,76,Mid,2,selected
+Female,53,West,Masters,76,Junior,13,rejected
+Female,37,West,Diploma,52,Mid,13,selected
+Prefer not to say,37,South,High School,70,Junior,0,selected
+Male,32,West,Diploma,95,Expert,29,rejected
+Female,39,North,Diploma,87,Expert,19,rejected
+Female,49,East,Diploma,58,Junior,27,selected
+Female,49,North,Masters,62,Senior,17,rejected
+Prefer not to say,26,Central,Bachelors,59,Senior,14,rejected
+Prefer not to say,60,South,Masters,61,Junior,18,rejected
+Non-binary,46,West,Diploma,99,Senior,16,selected
+Female,47,North,Diploma,99,Senior,30,rejected
+Male,59,South,High School,79,Mid,8,selected
+Male,45,Central,Diploma,76,Senior,20,rejected
+Non-binary,32,Central,PhD,77,Junior,7,rejected
+Female,35,East,Bachelors,65,Mid,20,rejected
+Prefer not to say,57,South,Masters,65,Senior,34,rejected
+Female,37,West,Masters,69,Junior,24,selected
+Male,42,Central,PhD,86,Senior,29,rejected
+Non-binary,26,East,Masters,80,Mid,27,rejected
+Non-binary,37,South,Bachelors,92,Junior,5,rejected
+Non-binary,27,North,Masters,80,Junior,26,selected
+Non-binary,50,West,PhD,98,Expert,25,selected
+Female,52,Central,Bachelors,65,Senior,12,rejected
+Male,43,West,Bachelors,78,Junior,2,rejected
+Male,30,East,High School,70,Senior,22,selected
+Male,32,Central,Masters,68,Senior,33,selected
+Non-binary,36,East,Bachelors,78,Junior,3,rejected
+Non-binary,37,West,Bachelors,72,Expert,20,selected
+Female,41,South,Bachelors,61,Junior,22,selected
+Non-binary,32,North,Bachelors,100,Senior,31,rejected
+Male,60,North,PhD,72,Mid,33,rejected
+Non-binary,24,East,Bachelors,59,Mid,25,rejected
+Prefer not to say,38,Central,Bachelors,85,Expert,35,selected
+Female,51,South,Masters,90,Senior,23,rejected
+Prefer not to say,49,Central,Bachelors,60,Expert,19,selected
+Male,24,East,Diploma,80,Mid,8,selected
+Non-binary,23,West,Masters,99,Expert,27,selected
+Male,23,South,PhD,88,Senior,5,rejected
+Prefer not to say,37,West,Masters,55,Senior,5,rejected
+Non-binary,23,North,Masters,93,Senior,16,rejected
+Prefer not to say,33,Central,High School,80,Mid,2,selected
+Male,35,South,Masters,86,Expert,11,selected
+Female,32,West,Masters,99,Expert,8,rejected
+Female,46,South,PhD,96,Expert,18,rejected
+Non-binary,25,Central,Bachelors,98,Expert,21,selected
+Male,39,West,Bachelors,60,Mid,1,selected
+Female,21,South,Masters,80,Senior,28,selected
+Prefer not to say,30,West,Bachelors,82,Senior,2,selected
+Non-binary,52,North,Diploma,55,Senior,5,selected
+Non-binary,44,East,Masters,97,Junior,10,selected
+Prefer not to say,29,North,Diploma,54,Expert,24,rejected
+Male,45,West,Bachelors,60,Mid,18,selected
+Prefer not to say,21,West,Diploma,75,Expert,35,rejected
+Male,59,East,Bachelors,99,Expert,21,selected
+Female,43,South,Masters,69,Junior,5,selected
+Female,58,West,PhD,80,Senior,1,selected
+Non-binary,44,South,Masters,81,Senior,34,selected
+Male,48,Central,Diploma,86,Mid,10,rejected
+Female,46,West,Masters,77,Senior,16,rejected
+Prefer not to say,36,West,PhD,74,Mid,31,rejected
+Female,38,East,Masters,79,Mid,4,selected
+Female,38,West,Masters,95,Expert,1,rejected
+Male,27,West,Diploma,52,Junior,8,selected
+Prefer not to say,52,North,Masters,86,Expert,30,rejected
+Male,53,West,Masters,64,Mid,13,selected
