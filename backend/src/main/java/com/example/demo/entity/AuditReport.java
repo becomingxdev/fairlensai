@@ -15,6 +15,11 @@ public class AuditReport {
     private String targetColumn;
     private double disparityRatio;
     private boolean isBiased;
+    private double fairnessScore;
+    private String severity;
+
+    @Column(columnDefinition = "TEXT")
+    private String detailsJson;
 
     @Column(columnDefinition = "TEXT")
     private String suggestions; // We'll store recommendations as a semicolon-separated string
@@ -78,6 +83,15 @@ public class AuditReport {
     public void setSuggestions(String suggestions) {
         this.suggestions = suggestions;
     }
+
+    public double getFairnessScore() { return fairnessScore; }
+    public void setFairnessScore(double fairnessScore) { this.fairnessScore = fairnessScore; }
+
+    public String getSeverity() { return severity; }
+    public void setSeverity(String severity) { this.severity = severity; }
+
+    public String getDetailsJson() { return detailsJson; }
+    public void setDetailsJson(String detailsJson) { this.detailsJson = detailsJson; }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;

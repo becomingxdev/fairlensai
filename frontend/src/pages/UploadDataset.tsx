@@ -21,11 +21,13 @@ import {
   Users,
   ChevronRight,
   LayoutDashboard,
+  Lightbulb,
 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Cell } from "recharts";
 import Sidebar from "../components/Sidebar";
 import TopBar from "../components/TopBar";
 import { biasService } from "../services/api";
+import type { AnalysisResult } from "../services/api";
 
 // ─── Stepper ────────────────────────────────────────────────────────
 
@@ -697,42 +699,48 @@ const AnalysisStep = ({ file, mapping, onComplete }: { file: File, mapping: any,
 // ─── Analysis Results UI ───────────────────────────────────────────────
 
 interface AnalysisResultsProps {
-  result: any;
+  result: AnalysisResult | null;
   onNewAudit: () => void;
   onDashboard: () => void;
   onViewFixes: () => void;
 }
 
 const AnalysisResults = ({ result, onNewAudit, onDashboard, onViewFixes }: AnalysisResultsProps) => {
-  const isBiased = result?.biased || false;
-  const disparateImpact = result?.disparityRatio || 1.0;
-  
-  const biasData = [
-    { group: 'Group A', rate: result?.groupAApprovalRate || 0 },
-    { group: 'Group B', rate: result?.groupBApprovalRate || 0 },
-  ];
+  if (!result) return null;
 
+  const severityTextColors: Record<string, string> = {
+    Low: 'text-emerald-600 dark:text-emerald-500',
+    Medium: 'text-blue-600 dark:text-blue-500',
+    High: 'text-amber-600 dark:text-amber-500',
+    Critical: 'text-red-600 dark:text-red-500'
+  };
+
+  const biasData = result.groupStats.map((stat) => ({
+    group: stat.name,
+    rate: stat.approvalRate,
+    count: stat.totalCount
+  }));
 
   return (
     <div className="w-full max-w-5xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="bg-white dark:bg-slate-900/50 rounded-[32px] border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden transition-colors duration-300">
         
         {/* TOP SUCCESS BANNER */}
-        <div className={`p-10 text-center border-b border-slate-50 dark:border-slate-800/50 ${isBiased ? 'bg-amber-50/30 dark:bg-amber-900/10' : 'bg-emerald-50/30 dark:bg-emerald-900/10'}`}>
+        <div className={`p-10 text-center border-b border-slate-50 dark:border-slate-800/50 ${result.severity === 'Low' ? 'bg-emerald-50/30 dark:bg-emerald-900/10' : 'bg-amber-50/30 dark:bg-amber-900/10'}`}>
           <motion.div 
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ type: "spring", stiffness: 260, damping: 20 }}
             className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg ${
-              isBiased ? 'bg-amber-500 text-white' : 'bg-emerald-500 text-white'
+              result.severity === 'Low' ? 'bg-emerald-500 text-white' : 'bg-amber-500 text-white'
             }`}
           >
-            {isBiased ? <AlertTriangle size={40} /> : <CheckCircle2 size={40} />}
+            {result.severity === 'Low' ? <CheckCircle2 size={40} /> : <AlertTriangle size={40} />}
           </motion.div>
           
           <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 leading-tight">Analysis Complete</h2>
           <p className="text-slate-500 dark:text-slate-400 mt-2 font-medium">
-            Audit ID: <span className="font-mono text-indigo-600 dark:text-indigo-400">FL-2026-0424</span>
+            Risk Level: <span className={`font-bold ${severityTextColors[result.severity] || 'text-slate-500'}`}>{result.severity} Risk</span>
           </p>
         </div>
 
@@ -742,72 +750,120 @@ const AnalysisResults = ({ result, onNewAudit, onDashboard, onViewFixes }: Analy
           {/* Main Verdict Card */}
           <div className="lg:col-span-1 space-y-6">
             <div className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-2xl border border-slate-100 dark:border-slate-700">
-              <p className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-4">Verdict</p>
-              <div className="flex items-end gap-2">
-                <span className={`text-5xl font-black ${isBiased ? 'text-amber-600 dark:text-amber-500' : 'text-emerald-600 dark:text-emerald-500'}`}>
-                  {isBiased ? 'Biased' : 'Fair'}
+              <p className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-4">Fairness Score</p>
+              <div className="flex items-baseline gap-2">
+                <span className={`text-6xl font-black ${severityTextColors[result.severity] || 'text-slate-500'}`}>
+                  {result.fairnessScore}
                 </span>
+                <span className="text-slate-400 text-sm font-bold">/ 100</span>
               </div>
-              <p className="text-sm text-slate-500 dark:text-slate-400 mt-4 leading-relaxed font-medium">
-                The Disparate Impact ratio is <span className="font-bold text-slate-700 dark:text-slate-300">{disparateImpact}</span>, 
-                which falls {isBiased ? 'below' : 'above'} the EEOC 80% threshold.
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-4 leading-relaxed font-medium italic">
+                "{result.summary}"
               </p>
             </div>
 
-            <div className="bg-indigo-600 p-6 rounded-2xl text-white relative overflow-hidden shadow-[0_20px_40px_-15px_rgba(79,70,229,0.5)] transition-transform hover:scale-[1.01]">
-              <div className="relative z-10">
-                <ShieldCheck className="mb-4 opacity-80" size={24} />
-                <h4 className="font-bold text-lg leading-tight mb-2">Recommendations Ready</h4>
-                <p className="text-indigo-100 text-xs leading-relaxed mb-4">
-                  We've identified 3 key adjustments to balance your training data.
-                </p>
-                <button 
-                  onClick={onViewFixes}
-                  className="w-full bg-[#1e293b] hover:bg-[#0f172a] text-white font-bold py-2.5 rounded-xl text-sm transition-colors shadow-lg"
-                >
-                  View Fixes
-                </button>
-              </div>
-              {/* Subtle internal gradient for depth */}
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none" />
+            {/* Metrics List */}
+            <div className="space-y-3">
+              <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">Key Metrics</p>
+              {result.metrics.map((metric, i: number) => (
+                <div key={i} className="p-4 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl shadow-sm">
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="text-xs font-bold text-slate-700 dark:text-slate-200">{metric.name}</span>
+                    <span className={`text-[10px] font-black px-1.5 py-0.5 rounded ${
+                      metric.status === 'Pass' ? 'bg-emerald-100 text-emerald-700' : 
+                      metric.status === 'Warning' ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'
+                    }`}>
+                      {metric.status}
+                    </span>
+                  </div>
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-lg font-black text-slate-900 dark:text-white">
+                      {metric.value.toFixed(2)}
+                    </span>
+                    <span className="text-[10px] text-slate-400">Target: {metric.threshold}</span>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
           {/* Visualization Card */}
-          <div className="lg:col-span-2 bg-white dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-100 dark:border-slate-800 transition-colors">
-            <div className="flex justify-between items-center mb-8">
-              <div>
-                <h3 className="font-bold text-lg text-slate-800 dark:text-slate-100">Approval Rate by Gender</h3>
-                <p className="text-xs text-slate-400 dark:text-slate-500 font-medium">Comparison across protected groups</p>
+          <div className="lg:col-span-2 space-y-6">
+            <div className="bg-white dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-100 dark:border-slate-800 transition-colors">
+              <div className="flex justify-between items-center mb-8">
+                <div>
+                  <h3 className="font-bold text-lg text-slate-800 dark:text-slate-100">Approval Rate Comparison</h3>
+                  <p className="text-xs text-slate-400 dark:text-slate-500 font-medium">Comparison across mapped groups</p>
+                </div>
+                <div className="flex items-center gap-2 text-xs font-bold text-slate-500 dark:text-slate-400">
+                  <Users size={14} />
+                  Total N = {result.groupStats.reduce((acc: number, curr) => acc + curr.totalCount, 0).toLocaleString()}
+                </div>
               </div>
-              <div className="flex items-center gap-2 text-xs font-bold text-slate-500 dark:text-slate-400">
-                <Users size={14} />
-                N = 12,450
+
+              <div className="h-64 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={biasData} layout="vertical" margin={{ left: 20 }}>
+                    <XAxis type="number" hide domain={[0, 1]} />
+                    <YAxis 
+                      dataKey="group" 
+                      type="category" 
+                      axisLine={false} 
+                      tickLine={false} 
+                      tick={{ fontSize: 12, fontWeight: 700, fill: '#475569' }} 
+                    />
+                    <Tooltip 
+                      cursor={{fill: 'transparent'}}
+                      contentStyle={{borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)'}}
+                      formatter={(value: any) => [`${(Number(value) * 100).toFixed(1)}%`, 'Approval Rate']}
+                    />
+                    <Bar dataKey="rate" radius={[0, 8, 8, 0]} barSize={32}>
+                      {biasData.map((_entry, index: number) => (
+                        <Cell key={`cell-${index}`} fill={_entry.rate < result.metrics[0].threshold ? '#f59e0b' : '#6366f1'} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
               </div>
             </div>
 
-            <div className="h-64 w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={biasData} layout="vertical" margin={{ left: 20 }}>
-                  <XAxis type="number" hide domain={[0, 1]} />
-                  <YAxis 
-                    dataKey="group" 
-                    type="category" 
-                    axisLine={false} 
-                    tickLine={false} 
-                    tick={{ fontSize: 12, fontWeight: 700, fill: '#475569' }} 
-                  />
-                  <Tooltip 
-                    cursor={{fill: 'transparent'}}
-                    contentStyle={{borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)'}}
-                  />
-                  <Bar dataKey="rate" radius={[0, 8, 8, 0]} barSize={32}>
-                    {biasData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.rate < 0.7 ? '#f59e0b' : '#6366f1'} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
+            {/* Recommendations & Warnings */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="p-6 bg-indigo-600 rounded-2xl text-white shadow-lg">
+                <div className="flex justify-between items-start mb-4">
+                  <h4 className="font-bold text-sm uppercase tracking-widest flex items-center gap-2">
+                    <Lightbulb size={16} /> Recommendations
+                  </h4>
+                  <button 
+                    onClick={onViewFixes}
+                    className="text-[10px] font-bold bg-white/20 hover:bg-white/30 px-2 py-1 rounded transition-colors"
+                  >
+                    Details
+                  </button>
+                </div>
+                <ul className="space-y-3">
+                  {result.recommendations.map((rec: string, i: number) => (
+                    <li key={i} className="text-xs font-medium leading-relaxed flex gap-2">
+                      <span className="opacity-50">•</span> {rec}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="p-6 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-700">
+                <h4 className="font-bold text-sm uppercase tracking-widest text-slate-400 mb-4 flex items-center gap-2">
+                  <ShieldAlert size={16} /> Warnings
+                </h4>
+                <ul className="space-y-3">
+                  {result.warnings.length > 0 ? result.warnings.map((warn: string, i: number) => (
+                    <li key={i} className="text-xs font-medium text-slate-600 dark:text-slate-400 leading-relaxed flex gap-2">
+                      <span className="text-amber-500">⚠</span> {warn}
+                    </li>
+                  )) : (
+                    <li className="text-xs font-medium text-slate-400">No critical data warnings detected.</li>
+                  )}
+                </ul>
+              </div>
             </div>
           </div>
         </div>
@@ -823,13 +879,11 @@ const AnalysisResults = ({ result, onNewAudit, onDashboard, onViewFixes }: Analy
           </button>
           
           <div className="flex gap-4">
-            {/* Outline Button */}
             <button className="flex items-center gap-2 px-6 py-3.5 bg-transparent border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded-2xl font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-slate-400 dark:hover:border-slate-600 transition-all">
               <FileDown size={18} />
-              Download PDF Report
+              Download Full PDF
             </button>
 
-            {/* High-Fidelity Primary Button with 'Cyber' Glow */}
             <button 
               onClick={onDashboard}
               className="flex items-center gap-2 px-8 py-3.5 bg-indigo-600 text-white rounded-2xl font-bold text-sm transition-all hover:bg-indigo-500 hover:scale-[1.02] active:scale-95 shadow-[0_10px_25px_-5px_rgba(79,70,229,0.4)]"
@@ -850,7 +904,7 @@ const UploadDataset = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-  const [analysisResult, setAnalysisResult] = useState<any>(null);
+  const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
   const [detectedHeaders, setDetectedHeaders] = useState<string[]>([]);
 
   const [analysisMapping, setAnalysisMapping] = useState({

@@ -13,6 +13,27 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+export interface AnalysisResult {
+  fairnessScore: number;
+  severity: 'Low' | 'Medium' | 'High' | 'Critical';
+  metrics: Array<{
+    name: string;
+    value: number;
+    threshold: number;
+    status: 'Pass' | 'Fail' | 'Warning';
+    description: string;
+  }>;
+  groupStats: Array<{
+    name: string;
+    totalCount: number;
+    approvedCount: number;
+    approvalRate: number;
+  }>;
+  warnings: string[];
+  summary: string;
+  recommendations: string[];
+}
+
 export default api;
 
 export const biasService = {
