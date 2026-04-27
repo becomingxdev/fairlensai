@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Bell, LogOut } from "lucide-react";
+import { Bell } from "lucide-react";
 import NotificationPopover from "./NotificationPopover";
 
 interface TopBarProps {
@@ -9,7 +8,6 @@ interface TopBarProps {
 }
 
 const TopBar = ({ title, subtitle }: TopBarProps) => {
-  const navigate = useNavigate();
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
 
   return (

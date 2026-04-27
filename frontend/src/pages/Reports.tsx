@@ -1,11 +1,9 @@
-import React from 'react';
 import { 
   FileText, 
   Download, 
   Search, 
   Filter, 
   MoreVertical, 
-  ExternalLink,
   ShieldCheck,
   ShieldAlert,
   Calendar

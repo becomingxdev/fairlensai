@@ -1,7 +1,5 @@
-import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Bell, 
   ShieldAlert, 
   CheckCircle2, 
   Info, 

@@ -18,7 +18,6 @@ import {
   AlertTriangle,
   FileDown,
   RefreshCw,
-  TrendingUp,
   Users,
   ChevronRight,
   LayoutDashboard,
@@ -27,13 +26,6 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Cell } from 
 import Sidebar from "../components/Sidebar";
 import TopBar from "../components/TopBar";
 import { biasService } from "../services/api";
-
-// ─── Types ──────────────────────────────────────────────────────────
-
-interface Step {
-  id: number;
-  label: string;
-}
 
 // ─── Stepper ────────────────────────────────────────────────────────
 
@@ -297,7 +289,8 @@ interface Column {
 
 interface ColumnMappingUIProps {
   fileName: string;
-  onAnalyze: () => void;
+  headers: string[];
+  onAnalyze: (mapping: { targetColumn: string, protectedColumn: string, groupA: string, groupB: string, approvalValue: string }) => void;
   onBack: () => void;
   onDashboard: () => void;
 }
@@ -319,12 +312,26 @@ const MAPPING_OPTIONS: { value: Column["mapping"]; label: string }[] = [
   { value: "ignore",    label: "Skip Column" },
 ];
 
-const ColumnMappingUI = ({ fileName, onAnalyze, onBack, onDashboard }: ColumnMappingUIProps) => {
-  const [columns, setColumns] = useState<Column[]>(DEFAULT_COLUMNS);
+const ColumnMappingUI = ({ fileName, headers, onAnalyze }: ColumnMappingUIProps) => {
+  const [columns, setColumns] = useState<Column[]>(
+    headers.length > 0 
+      ? headers.map(h => ({ name: h, type: "Categorical", mapping: "feature" }))
+      : DEFAULT_COLUMNS
+  );
+
+  const [mappingDetails, setMappingDetails] = useState({
+    groupA: "",
+    groupB: "",
+    approvalValue: ""
+  });
 
   const handleMappingChange = (index: number, value: Column["mapping"]) => {
     setColumns((prev) => {
       const next = [...prev];
+      // Only allow one target
+      if (value === "target") {
+        next.forEach((c, i) => { if (i !== index && c.mapping === "target") c.mapping = "feature"; });
+      }
       next[index] = { ...next[index], mapping: value };
       return next;
     });
@@ -332,7 +339,8 @@ const ColumnMappingUI = ({ fileName, onAnalyze, onBack, onDashboard }: ColumnMap
 
   const hasTarget    = columns.some((c) => c.mapping === "target");
   const hasProtected = columns.some((c) => c.mapping === "protected");
-  const canAnalyze   = hasTarget && hasProtected;
+  const detailsComplete = mappingDetails.groupA && mappingDetails.groupB && mappingDetails.approvalValue;
+  const canAnalyze   = hasTarget && hasProtected && detailsComplete;
 
   const targetCount    = columns.filter((c) => c.mapping === "target").length;
   const protectedCount = columns.filter((c) => c.mapping === "protected").length;
@@ -465,6 +473,48 @@ const ColumnMappingUI = ({ fileName, onAnalyze, onBack, onDashboard }: ColumnMap
               </tbody>
             </table>
           </div>
+
+          {/* New: Group Details Entry */}
+          {(hasTarget || hasProtected) && (
+            <div className="mt-8 p-6 bg-indigo-50/50 dark:bg-indigo-900/10 rounded-2xl border border-indigo-100 dark:border-indigo-800/50 mx-6 mb-6">
+              <h3 className="text-sm font-bold text-indigo-900 dark:text-indigo-100 mb-4 flex items-center gap-2">
+                <Info size={16} />
+                Detailed Analysis Parameters
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-[10px] font-bold text-indigo-500 uppercase tracking-wider mb-1.5 ml-1">Group A (e.g. Male)</label>
+                  <input 
+                    type="text" 
+                    placeholder="Reference Group"
+                    value={mappingDetails.groupA}
+                    onChange={(e) => setMappingDetails(prev => ({ ...prev, groupA: e.target.value }))}
+                    className="w-full px-4 py-2.5 rounded-xl border border-indigo-200 dark:border-indigo-800 bg-white dark:bg-slate-900 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-indigo-500 uppercase tracking-wider mb-1.5 ml-1">Group B (e.g. Female)</label>
+                  <input 
+                    type="text" 
+                    placeholder="Comparison Group"
+                    value={mappingDetails.groupB}
+                    onChange={(e) => setMappingDetails(prev => ({ ...prev, groupB: e.target.value }))}
+                    className="w-full px-4 py-2.5 rounded-xl border border-indigo-200 dark:border-indigo-800 bg-white dark:bg-slate-900 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-indigo-500 uppercase tracking-wider mb-1.5 ml-1">Approval Value (e.g. 1 or Selected)</label>
+                  <input 
+                    type="text" 
+                    placeholder="Success Outcome"
+                    value={mappingDetails.approvalValue}
+                    onChange={(e) => setMappingDetails(prev => ({ ...prev, approvalValue: e.target.value }))}
+                    className="w-full px-4 py-2.5 rounded-xl border border-indigo-200 dark:border-indigo-800 bg-white dark:bg-slate-900 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Footer */}
@@ -475,18 +525,18 @@ const ColumnMappingUI = ({ fileName, onAnalyze, onBack, onDashboard }: ColumnMap
               <>
                 <CheckCircle2 size={16} className="text-emerald-500 shrink-0" />
                 <p className="text-xs font-semibold text-emerald-600">
-                  Ready — all required roles are assigned.
+                  Ready — all required roles and group values are assigned.
                 </p>
               </>
             ) : (
               <>
                 <Info size={16} className="text-slate-400 dark:text-slate-500 shrink-0" />
                 <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                  {!hasTarget && !hasProtected
-                    ? "Select at least 1 Decision Outcome and 1 Protected Attribute."
-                    : !hasTarget
-                    ? "Missing: mark one column as Decision Outcome."
-                    : "Missing: mark at least one column as Protected Attribute."}
+                  {!hasTarget || !hasProtected
+                    ? "Select 1 Decision Outcome and at least 1 Protected Attribute."
+                    : !detailsComplete
+                    ? "Fill in Group A, Group B, and Approval Value."
+                    : ""}
                 </p>
               </>
             )}
@@ -494,7 +544,15 @@ const ColumnMappingUI = ({ fileName, onAnalyze, onBack, onDashboard }: ColumnMap
 
           <button
             id="analyze-dataset-btn"
-            onClick={onAnalyze}
+            onClick={() => {
+              const target = columns.find(c => c.mapping === "target")?.name || "";
+              const protectedCol = columns.find(c => c.mapping === "protected")?.name || "";
+              onAnalyze({
+                targetColumn: target,
+                protectedColumn: protectedCol,
+                ...mappingDetails
+              });
+            }}
             disabled={!canAnalyze}
             className={`flex items-center gap-2 px-8 py-3 rounded-xl font-bold text-sm transition-all ${
               canAnalyze
@@ -515,7 +573,7 @@ const ColumnMappingUI = ({ fileName, onAnalyze, onBack, onDashboard }: ColumnMap
 };
 
 // ─── Analysis Step ─────────────────────────────────────────────────────
-const AnalysisStep = ({ file, onComplete }: { file: File, onComplete: (result: any) => void }) => {
+const AnalysisStep = ({ file, mapping, onComplete }: { file: File, mapping: any, onComplete: (result: any) => void }) => {
   const [progress, setProgress] = useState(0);
   const [currentPhase, setCurrentPhase] = useState(0);
 
@@ -527,7 +585,7 @@ const AnalysisStep = ({ file, onComplete }: { file: File, onComplete: (result: a
           setProgress(p => Math.min(p + 1, 95));
         }, 100);
 
-        const response = await biasService.analyze(file);
+        const response = await biasService.analyze(file, mapping);
         
         clearInterval(interval);
         setProgress(100);
@@ -538,7 +596,7 @@ const AnalysisStep = ({ file, onComplete }: { file: File, onComplete: (result: a
       }
     };
     runAnalysis();
-  }, [file, onComplete]);
+  }, [file, mapping, onComplete]);
 
   const phases = [
     { label: "Loading Protected Attributes: Gender, Age", icon: <Database size={16} /> },
@@ -793,7 +851,15 @@ const UploadDataset = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [analysisResult, setAnalysisResult] = useState<any>(null);
+  const [detectedHeaders, setDetectedHeaders] = useState<string[]>([]);
 
+  const [analysisMapping, setAnalysisMapping] = useState({
+    targetColumn: "",
+    protectedColumn: "",
+    groupA: "",
+    groupB: "",
+    approvalValue: ""
+  });
 
   const handleFileAccepted = (file: File) => {
     setUploadedFile(file);
@@ -801,11 +867,29 @@ const UploadDataset = () => {
 
   const handleRemove = () => {
     setUploadedFile(null);
+    setAnalysisMapping({
+      targetColumn: "",
+      protectedColumn: "",
+      groupA: "",
+      groupB: "",
+      approvalValue: ""
+    });
   };
 
-  const handleContinue = () => {
-    setCurrentStep(2);
-    // TODO: trigger backend analysis here
+  const handleContinue = async () => {
+    if (!uploadedFile) return;
+    
+    try {
+      // Step 1: Upload and get headers
+      const response = await biasService.upload(uploadedFile);
+      setDetectedHeaders(response.data.headers);
+      
+      // We pass the headers to the next step
+      setCurrentStep(2);
+    } catch (error) {
+      console.error("Upload failed:", error);
+      alert("Failed to upload dataset. Please check your connection.");
+    }
   };
 
   return (
@@ -850,13 +934,18 @@ const UploadDataset = () => {
             ) : currentStep === 2 ? (
               <ColumnMappingUI
                 fileName={uploadedFile?.name ?? "your file"}
-                onAnalyze={() => setCurrentStep(3)}
+                headers={detectedHeaders}
+                onAnalyze={(mapping) => {
+                  setAnalysisMapping(mapping);
+                  setCurrentStep(3);
+                }}
                 onBack={() => setCurrentStep((s) => Math.max(1, s - 1))}
                 onDashboard={() => navigate("/dashboard")}
               />
             ) : currentStep === 3 ? (
               <AnalysisStep 
                 file={uploadedFile!} 
+                mapping={analysisMapping}
                 onComplete={(res) => {
                   setAnalysisResult(res);
                   setCurrentStep(4);

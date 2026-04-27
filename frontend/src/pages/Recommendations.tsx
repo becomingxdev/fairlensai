@@ -1,7 +1,4 @@
-import React from 'react';
 import { 
-  Lightbulb, 
-  ChevronRight, 
   Scale, 
   UserPlus, 
   Settings, 

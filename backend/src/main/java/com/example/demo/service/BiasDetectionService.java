@@ -72,11 +72,16 @@ public class BiasDetectionService {
     // Create the logger instance
     private static final Logger logger = LoggerFactory.getLogger(BiasDetectionService.class);
 
-    public BiasResultDTO analyzeFairness(List<Map<String, String>> parsedData, String targetColumn, String groupA,
-            String groupB) {
+    public BiasResultDTO analyzeFairness(List<Map<String, String>> parsedData, 
+                                       String protectedColumn, 
+                                       String decisionColumn, 
+                                       String groupA, 
+                                       String groupB, 
+                                       String approvalValue) {
 
         // Log the start of the analysis
-        logger.info("Starting bias analysis for column: {} comparing {} vs {}", targetColumn, groupA, groupB);
+        logger.info("Starting bias analysis for column: {} comparing {} vs {} on decision: {}", 
+                protectedColumn, groupA, groupB, decisionColumn);
 
         double groupATotal = 0;
         double groupAApproved = 0;
@@ -84,17 +89,17 @@ public class BiasDetectionService {
         double groupBApproved = 0;
 
         for (Map<String, String> row : parsedData) {
-            String groupValue = row.getOrDefault(targetColumn, "").trim();
-            String status = row.getOrDefault("selected / rejected", "").trim().toLowerCase();
+            String protectedValue = row.getOrDefault(protectedColumn, "").trim();
+            String decisionValue = row.getOrDefault(decisionColumn, "").trim();
 
-            if (groupValue.equalsIgnoreCase(groupA)) {
+            if (protectedValue.equalsIgnoreCase(groupA)) {
                 groupATotal++;
-                if (status.equals("selected")) {
+                if (decisionValue.equalsIgnoreCase(approvalValue)) {
                     groupAApproved++;
                 }
-            } else if (groupValue.equalsIgnoreCase(groupB)) {
+            } else if (protectedValue.equalsIgnoreCase(groupB)) {
                 groupBTotal++;
-                if (status.equals("selected")) {
+                if (decisionValue.equalsIgnoreCase(approvalValue)) {
                     groupBApproved++;
                 }
             }
@@ -112,9 +117,9 @@ public class BiasDetectionService {
         if (rateA == 0 && rateB == 0) {
             disparityRatio = 1.0;
         } else if (rateA < rateB) {
-            disparityRatio = rateA / rateB;
+            disparityRatio = rateB == 0 ? 1.0 : rateA / rateB;
         } else {
-            disparityRatio = rateB / rateA;
+            disparityRatio = rateA == 0 ? 1.0 : rateB / rateA;
         }
 
         // Log the final results of the calculation
@@ -127,6 +132,6 @@ public class BiasDetectionService {
                     disparityRatio);
         }
 
-        return new BiasResultDTO(targetColumn, rateA, rateB, disparityRatio, null);
+        return new BiasResultDTO(protectedColumn, rateA, rateB, disparityRatio, null);
     }
 }

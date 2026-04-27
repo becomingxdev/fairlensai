@@ -16,9 +16,24 @@ api.interceptors.request.use((config) => {
 export default api;
 
 export const biasService = {
-  analyze: (file: File) => {
+  upload: (file: File) => {
     const formData = new FormData();
     formData.append('file', file);
+    return api.post('/upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  },
+  analyze: (file: File, mapping: { targetColumn: string, protectedColumn: string, groupA: string, groupB: string, approvalValue: string }) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('targetColumn', mapping.targetColumn);
+    formData.append('protectedColumn', mapping.protectedColumn);
+    formData.append('groupA', mapping.groupA);
+    formData.append('groupB', mapping.groupB);
+    formData.append('approvalValue', mapping.approvalValue);
+    
     return api.post('/analyze', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -27,3 +42,4 @@ export const biasService = {
   },
   getHistory: () => api.get('/analyze/history'),
 };
+

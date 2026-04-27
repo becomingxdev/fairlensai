@@ -158,7 +158,14 @@ public class BiasController {
     }
 
     @PostMapping
-    public ResponseEntity<?> analyzeDataset(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<?> analyzeDataset(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("targetColumn") String targetColumn, // This is actually the decision column in the new service logic
+            @RequestParam("protectedColumn") String protectedColumn,
+            @RequestParam("groupA") String groupA,
+            @RequestParam("groupB") String groupB,
+            @RequestParam("approvalValue") String approvalValue) {
+            
         if (file.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please upload a valid CSV file.");
         }
@@ -171,24 +178,17 @@ public class BiasController {
             }
             String uid = (String) principal;
 
-
             // 2. Look up the actual User profile in the database
             Optional<User> optionalUser = userRepository.findByFirebaseUid(uid);
-            User loggedInUser;
-            
             if (optionalUser.isEmpty()) {
-                // If the mock user doesn't exist, create it on the fly for testing
-                loggedInUser = new User(uid, "tester@example.com", "Test User", "STANDARD_USER", "Mock Org");
-                userRepository.save(loggedInUser);
-            } else {
-                loggedInUser = optionalUser.get();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User profile not found. Please sync your account first.");
             }
-
+            User loggedInUser = optionalUser.get();
 
             // 3. Parse the incoming CSV file
             List<Map<String, String>> parsedData = csvParserService.parseCsv(file);
 
-            // 4. NEW: Save Dataset Metadata (Satisfies the PRD Requirement)
+            // 4. Save Dataset Metadata
             Dataset dataset = new Dataset(
                 file.getOriginalFilename(),
                 loggedInUser,
@@ -197,31 +197,32 @@ public class BiasController {
             );
             datasetRepository.save(dataset);
 
-            // 5. Run the Bias Detection Engine
-            String targetColumn = "gender";
-            String groupA = "Male";
-            String groupB = "Female";
-
-            // Get initial math result
-            BiasResultDTO tempResult = biasDetectionService.analyzeFairness(parsedData, targetColumn, groupA, groupB);
+            // 5. Run the Bias Detection Engine using dynamic mappings
+            // Note: targetColumn here represents the decision column (e.g. Hiring_Decision)
+            BiasResultDTO tempResult = biasDetectionService.analyzeFairness(
+                parsedData, 
+                protectedColumn, 
+                targetColumn, 
+                groupA, 
+                groupB, 
+                approvalValue
+            );
 
             // 6. Generate Recommendations
-            String disadvantagedGroup = tempResult.getGroupAApprovalRate() < tempResult.getGroupBApprovalRate() ? groupA
-                    : groupB;
-            List<String> insights = recommendationService.generateRecommendations(tempResult.getDisparityRatio(),
-                    disadvantagedGroup);
+            String disadvantagedGroup = tempResult.getGroupAApprovalRate() < tempResult.getGroupBApprovalRate() ? groupA : groupB;
+            List<String> insights = recommendationService.generateRecommendations(tempResult.getDisparityRatio(), disadvantagedGroup);
 
-            // 7. Save to Database
+            // 7. Save Audit Report
             AuditReport report = new AuditReport();
             report.setFileName(file.getOriginalFilename());
-            report.setUserId(uid); // Save the UID with the report
+            report.setUserId(uid);
             report.setTargetColumn(targetColumn);
             report.setDisparityRatio(tempResult.getDisparityRatio());
             report.setBiased(tempResult.isBiased());
             report.setSuggestions(String.join("; ", insights));
             auditReportRepository.save(report);
 
-            // 8. Package final result with recommendations
+            // 8. Return final result
             BiasResultDTO finalResult = new BiasResultDTO(
                     tempResult.getGroupName(),
                     tempResult.getGroupAApprovalRate(),
@@ -229,7 +230,6 @@ public class BiasController {
                     tempResult.getDisparityRatio(),
                     insights);
 
-            // Return the calculated result including recommendations
             return ResponseEntity.ok(finalResult);
 
         } catch (Exception e) {

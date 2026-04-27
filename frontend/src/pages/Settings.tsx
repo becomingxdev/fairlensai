@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Sun, Moon, Monitor, CheckCircle2, Palette, ShieldCheck,
   Layout, BellRing, Mail, Key, Smartphone, Users, Database, Globe,
-  Eye, AlertCircle, Monitor as MonitorIcon
+  Monitor as MonitorIcon
 } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import { useAccessibility } from '../contexts/AccessibilityContext';

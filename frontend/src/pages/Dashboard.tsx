@@ -226,7 +226,7 @@ const Dashboard = () => {
                     radius={[10, 10, 0, 0]}
                     barSize={50}
                   >
-                    {chartData.map((entry, index) => (
+                    {chartData.map((_entry, index) => (
                       <Cell 
                         key={`cell-${index}`} 
                         fill="#818cf8" 
