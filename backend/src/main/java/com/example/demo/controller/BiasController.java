@@ -131,7 +131,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/analyze")
-@CrossOrigin(origins = "*")
 public class BiasController {
 
     private final CsvParserService csvParserService;
@@ -166,14 +165,25 @@ public class BiasController {
 
         try {
             // 1. Extract the Firebase UID from the security context
-            String uid = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-            // 2. NEW: Look up the actual User profile in the database
-            Optional<User> optionalUser = userRepository.findByFirebaseUid(uid);
-            if (optionalUser.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User profile not found in database. Please log in again.");
+            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (!(principal instanceof String)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated.");
             }
-            User loggedInUser = optionalUser.get();
+            String uid = (String) principal;
+
+
+            // 2. Look up the actual User profile in the database
+            Optional<User> optionalUser = userRepository.findByFirebaseUid(uid);
+            User loggedInUser;
+            
+            if (optionalUser.isEmpty()) {
+                // If the mock user doesn't exist, create it on the fly for testing
+                loggedInUser = new User(uid, "tester@example.com", "Test User", "STANDARD_USER", "Mock Org");
+                userRepository.save(loggedInUser);
+            } else {
+                loggedInUser = optionalUser.get();
+            }
+
 
             // 3. Parse the incoming CSV file
             List<Map<String, String>> parsedData = csvParserService.parseCsv(file);
@@ -232,9 +242,16 @@ public class BiasController {
     @GetMapping("/history")
     public ResponseEntity<List<AuditReport>> getMyHistory() {
         try {
-            String uid = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (!(principal instanceof String)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+            String uid = (String) principal;
+            
             // UPDATED: Now filters the database so a user only sees their own reports
             return ResponseEntity.ok(auditReportRepository.findByUserId(uid));
+
+
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

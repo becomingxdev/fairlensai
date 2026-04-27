@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import FairnessProgress from "../components/FairnessProgress";
 import NotificationPopover from "../components/NotificationPopover";
-import { TrendingUp, AlertCircle, ShieldCheck, Bell } from "lucide-react";
+import { TrendingUp, AlertCircle, ShieldCheck, Bell, Loader2 } from "lucide-react";
+import { biasService } from "../services/api";
 import {
   BarChart,
   Bar,
@@ -88,6 +89,36 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 // --- Main Dashboard ---
 const Dashboard = () => {
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [history, setHistory] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchHistory = async () => {
+      try {
+        const response = await biasService.getHistory();
+        setHistory(response.data);
+      } catch (error) {
+        console.error("Error fetching history:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchHistory();
+  }, []);
+
+  const totalUploads = history.length;
+  const biasedReports = history.filter(h => h.biased).length;
+  const avgDisparity = history.length > 0 
+    ? (history.reduce((acc, curr) => acc + curr.disparityRatio, 0) / history.length * 100).toFixed(0)
+    : 0;
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-[#f8fafc] dark:bg-[#0f172a]">
+        <Loader2 className="animate-spin text-purple-600" size={48} />
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen bg-[#f8fafc] dark:bg-[#0f172a] font-sans text-slate-900 dark:text-slate-100 overflow-hidden transition-colors duration-300">
@@ -133,22 +164,22 @@ const Dashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <StatCard
             title="Total Uploads"
-            value="12"
+            value={totalUploads.toString()}
             icon={<TrendingUp size={22} className="text-blue-600 dark:text-blue-400" />}
             gradient="bg-gradient-to-br from-blue-50 dark:from-blue-900/20 to-white dark:to-slate-800/50"
           />
           <StatCard
             title="Fairness Score"
-            value="85%"
+            value={`${avgDisparity}%`}
             icon={<ShieldCheck size={22} className="text-emerald-500 dark:text-emerald-400" />}
-            subtitle="↑ +2% from last month"
+            subtitle="Overall parity ratio"
             gradient="bg-gradient-to-br from-emerald-50 dark:from-emerald-900/20 to-white dark:to-slate-800/50"
           />
           <StatCard
             title="Risk Reports"
-            value="5"
+            value={biasedReports.toString()}
             icon={<AlertCircle size={22} className="text-amber-500 dark:text-amber-400" />}
-            subtitle="3 High Priority"
+            subtitle="Flagged for bias"
             gradient="bg-gradient-to-br from-amber-50 dark:from-amber-900/20 to-white dark:to-slate-800/50"
           />
         </div>

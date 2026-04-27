@@ -66,6 +66,7 @@ serviceAccountKey.json
 gcp-key.json
 *.pem
 *.key
+firebaseAdminSdk.json
 
 # =========================
 # Uploads / Generated Files

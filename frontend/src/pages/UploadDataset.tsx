@@ -26,6 +26,7 @@ import {
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Cell } from "recharts";
 import Sidebar from "../components/Sidebar";
 import TopBar from "../components/TopBar";
+import { biasService } from "../services/api";
 
 // ─── Types ──────────────────────────────────────────────────────────
 
@@ -514,10 +515,30 @@ const ColumnMappingUI = ({ fileName, onAnalyze, onBack, onDashboard }: ColumnMap
 };
 
 // ─── Analysis Step ─────────────────────────────────────────────────────
-
-const AnalysisStep = ({ onComplete }: { onComplete: () => void }) => {
+const AnalysisStep = ({ file, onComplete }: { file: File, onComplete: (result: any) => void }) => {
   const [progress, setProgress] = useState(0);
   const [currentPhase, setCurrentPhase] = useState(0);
+
+  useEffect(() => {
+    const runAnalysis = async () => {
+      try {
+        // Start progress simulation for UX
+        const interval = setInterval(() => {
+          setProgress(p => Math.min(p + 1, 95));
+        }, 100);
+
+        const response = await biasService.analyze(file);
+        
+        clearInterval(interval);
+        setProgress(100);
+        setTimeout(() => onComplete(response.data), 1000);
+      } catch (error) {
+        console.error("Analysis failed:", error);
+        alert("Error analyzing file. Please check if the format is correct.");
+      }
+    };
+    runAnalysis();
+  }, [file, onComplete]);
 
   const phases = [
     { label: "Loading Protected Attributes: Gender, Age", icon: <Database size={16} /> },
@@ -526,33 +547,13 @@ const AnalysisStep = ({ onComplete }: { onComplete: () => void }) => {
     { label: "Finalizing Audit Report...", icon: <ShieldCheck size={16} /> }
   ];
 
-  // Simulation of the analysis progress
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(timer);
-          return 100;
-        }
-        return prev + 1;
-      });
-    }, 50); // Adjust speed here
-
-    return () => clearInterval(timer);
-  }, []);
-
   // Update text phases based on progress percentage
   useEffect(() => {
     if (progress < 25) setCurrentPhase(0);
     else if (progress < 50) setCurrentPhase(1);
     else if (progress < 75) setCurrentPhase(2);
     else setCurrentPhase(3);
-    
-    if (progress === 100) {
-      const timeout = setTimeout(onComplete, 1000); // Small delay before moving to Results
-      return () => clearTimeout(timeout);
-    }
-  }, [progress, onComplete]);
+  }, [progress]);
 
   return (
     <div className="w-full max-w-4xl mx-auto animate-in fade-in zoom-in duration-500">
@@ -638,21 +639,21 @@ const AnalysisStep = ({ onComplete }: { onComplete: () => void }) => {
 // ─── Analysis Results UI ───────────────────────────────────────────────
 
 interface AnalysisResultsProps {
+  result: any;
   onNewAudit: () => void;
   onDashboard: () => void;
   onViewFixes: () => void;
 }
 
-const AnalysisResults = ({ onNewAudit, onDashboard, onViewFixes }: AnalysisResultsProps) => {
-  // Mock data representing the audit findings
+const AnalysisResults = ({ result, onNewAudit, onDashboard, onViewFixes }: AnalysisResultsProps) => {
+  const isBiased = result?.biased || false;
+  const disparateImpact = result?.disparityRatio || 1.0;
+  
   const biasData = [
-    { group: 'Male', rate: 0.82 },
-    { group: 'Female', rate: 0.64 },
-    { group: 'Other', rate: 0.70 },
+    { group: 'Group A', rate: result?.groupAApprovalRate || 0 },
+    { group: 'Group B', rate: result?.groupBApprovalRate || 0 },
   ];
 
-  const disparateImpact = 0.78; // (0.64 / 0.82)
-  const isBiased = disparateImpact < 0.80;
 
   return (
     <div className="w-full max-w-5xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -791,6 +792,8 @@ const UploadDataset = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [analysisResult, setAnalysisResult] = useState<any>(null);
+
 
   const handleFileAccepted = (file: File) => {
     setUploadedFile(file);
@@ -852,12 +855,20 @@ const UploadDataset = () => {
                 onDashboard={() => navigate("/dashboard")}
               />
             ) : currentStep === 3 ? (
-              <AnalysisStep onComplete={() => setCurrentStep(4)} />
+              <AnalysisStep 
+                file={uploadedFile!} 
+                onComplete={(res) => {
+                  setAnalysisResult(res);
+                  setCurrentStep(4);
+                }} 
+              />
             ) : (
               <AnalysisResults
+                result={analysisResult}
                 onNewAudit={() => {
                   setCurrentStep(1);
                   setUploadedFile(null);
+                  setAnalysisResult(null);
                 }}
                 onDashboard={() => navigate("/dashboard")}
                 onViewFixes={() => navigate("/recommendations")}

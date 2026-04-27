@@ -22,9 +22,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResponseEntity<ErrorResponse> handleMaxSizeException(MaxUploadSizeExceededException exc) {
         ErrorResponse error = new ErrorResponse(
-                HttpStatus.PAYLOAD_TOO_LARGE.value(),
+                HttpStatus.CONTENT_TOO_LARGE.value(),
                 "The file you uploaded is too large! Please keep it under the limit set in application.properties.");
-        return new ResponseEntity<>(error, HttpStatus.PAYLOAD_TOO_LARGE);
+        return new ResponseEntity<>(error, HttpStatus.CONTENT_TOO_LARGE);
     }
 
     // 2. Handle File Reading/Writing Errors

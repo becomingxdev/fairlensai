@@ -8,7 +8,9 @@ import {
   User,
   Building2,
   ArrowRight,
+  Loader2,
 } from "lucide-react";
+import { useAuth } from "../contexts/AuthContext";
 
 // ─── Sub-components ────────────────────────────────────────────────
 
@@ -104,7 +106,9 @@ const BiasGauge = () => (
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login, register, loginWithGoogle } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
 
   // Form state
   const [name, setName]       = useState("");
@@ -112,7 +116,7 @@ const Login = () => {
   const [email, setEmail]     = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!email || !password) {
       alert("Please fill all required fields.");
       return;
@@ -121,8 +125,36 @@ const Login = () => {
       alert("Please enter your full name.");
       return;
     }
-    navigate("/dashboard");
+
+    setIsAuthenticating(true);
+    try {
+      if (isLogin) {
+        await login(email, password);
+      } else {
+        await register(email, password, name, org);
+      }
+      navigate("/dashboard");
+    } catch (error: any) {
+      console.error("Auth error:", error);
+      alert(error.message || "An error occurred during authentication.");
+    } finally {
+      setIsAuthenticating(false);
+    }
   };
+
+  const handleGoogleLogin = async () => {
+    setIsAuthenticating(true);
+    try {
+      await loginWithGoogle();
+      navigate("/dashboard");
+    } catch (error: any) {
+      console.error("Google Auth error:", error);
+      alert(error.message || "An error occurred during Google authentication.");
+    } finally {
+      setIsAuthenticating(false);
+    }
+  };
+
 
   return (
     <div className="flex h-screen w-full bg-white dark:bg-[#0f172a] font-sans overflow-hidden transition-colors duration-300">
@@ -201,7 +233,9 @@ const Login = () => {
           {/* Google SSO (UI only) */}
           <button
             id="google-sso-btn"
-            className="w-full flex items-center justify-center gap-3 py-3 border border-slate-200 dark:border-slate-700 rounded-xl font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all mb-6"
+            onClick={handleGoogleLogin}
+            disabled={isAuthenticating}
+            className="w-full flex items-center justify-center gap-3 py-3 border border-slate-200 dark:border-slate-700 rounded-xl font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all mb-6 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -295,16 +329,20 @@ const Login = () => {
               </div>
             </div>
 
-            <motion.button
-              id="auth-submit-btn"
-              type="submit"
-              whileTap={{ scale: 0.98 }}
-              whileHover={{ scale: 1.01 }}
-              className="w-full bg-[#8b5cf6] hover:bg-[#7c3aed] text-white font-bold py-4 rounded-xl shadow-lg shadow-purple-200 dark:shadow-none flex items-center justify-center gap-2 transition-colors mt-2"
+            <button
+              onClick={handleSubmit}
+              disabled={isAuthenticating}
+              className="w-full mt-8 py-4 bg-purple-600 hover:bg-purple-700 disabled:bg-purple-400 text-white rounded-2xl font-bold shadow-lg shadow-purple-500/20 flex items-center justify-center gap-2 group transition-all"
             >
-              {isLogin ? "Sign in" : "Create workspace"}
-              <ArrowRight size={18} />
-            </motion.button>
+              {isAuthenticating ? (
+                <Loader2 className="animate-spin" size={20} />
+              ) : (
+                <>
+                  {isLogin ? "Sign In" : "Create Account"}
+                  <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                </>
+              )}
+            </button>
           </form>
 
           {/* Toggle */}

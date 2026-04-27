@@ -40,6 +40,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -51,20 +56,39 @@ public class SecurityConfig {
                 // 1. Disable CSRF (Standard practice for REST APIs)
                 .csrf(csrf -> csrf.disable())
 
-                // 2. Enable CORS so your React frontend can talk to this backend without
-                // getting blocked
-                .cors(cors -> cors.configure(http))
+                // 2. Enable CORS
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 
-                // 3. Make the API stateless (We rely on Firebase tokens, not server sessions)
+                // 3. Make the API stateless
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-                // 4. Lock the doors: EVERY request must be authenticated
+                // 4. Set up Authorization Rules
                 .authorizeHttpRequests(auth -> auth
+                        // Public routes (if any)
+                        .requestMatchers("/api/health", "/api/public/**").permitAll()
+                        
+                        // All other API routes MUST be authenticated via Firebase
                         .anyRequest().authenticated())
 
-                // 5. Put our Firebase "Bouncer" at the front door before anything else
+                // 5. Add Firebase Filter before the standard UsernamePasswordAuthenticationFilter
                 .addFilterBefore(new FirebaseFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        // Allow the React dev server origin
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://localhost:3000"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "Accept"));
+        configuration.setExposedHeaders(Arrays.asList("Authorization"));
+        configuration.setAllowCredentials(true);
+        
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 }
+

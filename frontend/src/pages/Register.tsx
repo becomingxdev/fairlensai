@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 const Register = () => {
   const navigate = useNavigate();
   useEffect(() => {
-    navigate("/", { replace: true });
+    navigate("/login", { replace: true });
   }, [navigate]);
   return null;
 };

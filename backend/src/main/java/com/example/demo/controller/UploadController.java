@@ -18,7 +18,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/upload")
-@CrossOrigin(origins = "*") // Allows your React frontend to talk to this API
 public class UploadController {
 
     private final CsvParserService csvParserService;

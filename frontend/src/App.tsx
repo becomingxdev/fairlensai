@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { AccessibilityProvider } from "./contexts/AccessibilityContext";
 import Login from "./pages/Login";
@@ -8,6 +8,7 @@ import UploadDataset from "./pages/UploadDataset";
 import Reports from "./pages/Reports";
 import Recommendations from "./pages/Recommendations";
 import Settings from "./pages/Settings";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
@@ -16,14 +17,55 @@ function App() {
         <div className="h-screen w-full bg-gray-100 dark:bg-slate-950">
           <BrowserRouter>
             <Routes>
-              <Route path="/" element={<Login />} />
+              {/* Public Routes */}
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/upload" element={<UploadDataset />} />
-              <Route path="/reports" element={<Reports />} />
-              <Route path="/recommendations" element={<Recommendations />} />
-              <Route path="/settings" element={<Settings />} />
+
+              {/* Protected Routes */}
+              <Route 
+                path="/dashboard" 
+                element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/upload" 
+                element={
+                  <ProtectedRoute>
+                    <UploadDataset />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/reports" 
+                element={
+                  <ProtectedRoute>
+                    <Reports />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/recommendations" 
+                element={
+                  <ProtectedRoute>
+                    <Recommendations />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/settings" 
+                element={
+                  <ProtectedRoute>
+                    <Settings />
+                  </ProtectedRoute>
+                } 
+              />
+
+              {/* Catch all */}
+              <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Routes>
           </BrowserRouter>
         </div>
@@ -32,4 +74,4 @@ function App() {
   );
 }
 
-export default App;
+export default App;

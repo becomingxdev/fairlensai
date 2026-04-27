@@ -10,6 +10,7 @@ import {
   Menu,
   Settings,
 } from "lucide-react";
+import { useAuth } from "../contexts/AuthContext";
 
 const navItems = [
   { icon: LayoutDashboard, label: "Dashboard", to: "/dashboard" },
@@ -22,6 +23,7 @@ const navItems = [
 const Sidebar = () => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
   const [isCollapsed, setIsCollapsed] = useState(() => {
     const saved = localStorage.getItem("sidebarCollapsed");
     return saved === "true";
@@ -32,6 +34,18 @@ const Sidebar = () => {
     setIsCollapsed(newState);
     localStorage.setItem("sidebarCollapsed", String(newState));
   };
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
+  const userInitial = user?.displayName?.charAt(0) || user?.email?.charAt(0) || "U";
+  const userName = user?.displayName || user?.email?.split('@')[0] || "User";
 
   return (
     <aside className={`${isCollapsed ? "w-20" : "w-64"} h-screen bg-white dark:bg-[#0f172a] text-slate-900 dark:text-slate-100 flex flex-col p-4 shadow-xl border-r border-slate-200 dark:border-slate-800 shrink-0 transition-all duration-300 relative`}>
@@ -55,13 +69,13 @@ const Sidebar = () => {
 
       {/* Profile Badge */}
       <div className={`flex items-center gap-3 py-3 mb-8 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700/50 ${isCollapsed ? 'px-2 justify-center' : 'px-3'}`}>
-        <div className="w-10 h-10 bg-indigo-500 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm dark:shadow-md shrink-0">
-          J
+        <div className="w-10 h-10 bg-indigo-500 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm dark:shadow-md shrink-0 capitalize">
+          {userInitial}
         </div>
         {!isCollapsed && (
           <div className="min-w-0">
-            <p className="text-sm font-bold text-slate-800 dark:text-slate-100 truncate">John Doe</p>
-            <p className="text-[10px] text-indigo-600 dark:text-indigo-400 font-bold uppercase tracking-wider">CEO / Lead</p>
+            <p className="text-sm font-bold text-slate-800 dark:text-slate-100 truncate">{userName}</p>
+            <p className="text-[10px] text-indigo-600 dark:text-indigo-400 font-bold uppercase tracking-wider">Workspace Member</p>
           </div>
         )}
       </div>
@@ -102,7 +116,7 @@ const Sidebar = () => {
 
       {/* Logout */}
       <button
-        onClick={() => navigate("/login")}
+        onClick={handleLogout}
         title={isCollapsed ? "Logout" : undefined}
         className={`flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition-colors rounded-xl hover:bg-red-50 dark:hover:bg-slate-800/50 ${isCollapsed ? 'justify-center px-0 mt-auto' : ''}`}
       >
@@ -113,4 +127,4 @@ const Sidebar = () => {
   );
 };
 
-export default Sidebar;
+export default Sidebar;

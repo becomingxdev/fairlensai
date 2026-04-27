@@ -33,25 +33,28 @@ public class FirebaseFilter extends OncePerRequestFilter {
         if (header != null && header.startsWith("Bearer ")) {
             String idToken = header.replace("Bearer ", "");
             try {
-                // This checks the token with Firebase
+                // Verify the token with Firebase
                 FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
 
-                // If the check passes, we tell Spring "This user is okay!"
+                // Set the authentication in the context
+                // We use UID as the principal. We could also pass the whole decodedToken if needed.
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         decodedToken.getUid(), null, new ArrayList<>());
+                
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
             } catch (Exception e) {
+                // If token is present but invalid, return 401
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json");
+                response.getWriter().write("{\"error\": \"Invalid or expired Firebase token\", \"message\": \"" + e.getMessage() + "\"}");
                 return;
             }
         }
-        else {
-            // NEW: If they didn't send a token at all, kick them out immediately with a 401
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Missing Authorization token.");
-            return;
-        }
+        
+        // Continue the filter chain. 
+        // If no token was provided, SecurityContext remains empty, 
+        // and Spring Security will block access if the route is protected.
         filterChain.doFilter(request, response);
     }
-}
+}
