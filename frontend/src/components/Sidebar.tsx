@@ -6,10 +6,10 @@ import {
   FileText,
   Lightbulb,
   LogOut,
-  ShieldCheck,
   Menu,
   Settings,
 } from "lucide-react";
+import viteLogo from "../assets/vite.svg";
 import { useAuth } from "../contexts/AuthContext";
 
 const navItems = [
@@ -54,7 +54,7 @@ const Sidebar = () => {
         {!isCollapsed && (
           <div className="flex items-center gap-3">
             <div className="bg-indigo-600 p-2 rounded-lg shrink-0">
-              <ShieldCheck size={24} className="text-white" />
+              <img src={viteLogo} alt="Fairlens AI Logo" className="w-6 h-6" />
             </div>
             <h1 className="text-xl font-bold tracking-tight italic whitespace-nowrap text-slate-900 dark:text-white">FairLens AI</h1>
           </div>

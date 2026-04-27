@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  ShieldCheck,
   Mail,
   Lock,
   User,
@@ -10,6 +9,7 @@ import {
   ArrowRight,
   Loader2,
 } from "lucide-react";
+import viteLogo from "../assets/vite.svg";
 import { useAuth } from "../contexts/AuthContext";
 
 // ─── Sub-components ────────────────────────────────────────────────
@@ -168,7 +168,7 @@ const Login = () => {
         {/* Logo */}
         <div className="relative z-10 flex items-center gap-3">
           <div className="p-2 border border-slate-700 rounded-lg bg-slate-800/50">
-            <ShieldCheck className="text-white" size={24} />
+            <img src={viteLogo} alt="Fairlens AI Logo" className="w-6 h-6" />
           </div>
           <div>
             <h1 className="text-white font-bold text-xl tracking-tight">FairLens AI</h1>
