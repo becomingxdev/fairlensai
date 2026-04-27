@@ -34,6 +34,35 @@ export interface AnalysisResult {
   recommendations: string[];
 }
 
+export interface DashboardSummary {
+  totalUploads: number;
+  totalAudits: number;
+  avgFairnessScore: number;
+  latestFairnessScore: number;
+  highRiskCount: number;
+  mediumRiskCount: number;
+  lowRiskCount: number;
+}
+
+export interface RecentReport {
+  fileName: string;
+  date: string;
+  score: number;
+  severity: 'Low' | 'Medium' | 'High' | 'Critical';
+  protectedAttribute: string;
+}
+
+export interface TrendData {
+  labels: string[];
+  scores: number[];
+  auditCounts: number[];
+}
+
+export interface Distribution {
+  severityBreakdown: Record<string, number>;
+  avgScoreByAttribute: Record<string, number>;
+}
+
 export default api;
 
 export const biasService = {
@@ -62,5 +91,12 @@ export const biasService = {
     });
   },
   getHistory: () => api.get('/analyze/history'),
+};
+
+export const dashboardService = {
+  getSummary: () => api.get<DashboardSummary>('/dashboard/summary'),
+  getRecentReports: () => api.get<RecentReport[]>('/dashboard/recent'),
+  getTrends: () => api.get<TrendData>('/dashboard/trends'),
+  getDistribution: () => api.get<Distribution>('/dashboard/distribution'),
 };
 

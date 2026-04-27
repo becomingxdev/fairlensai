@@ -1,21 +1,15 @@
-// package com.example.demo.controller;
-
-// public class DashboardController {
-    
-// }
-
-
-
-
 package com.example.demo.controller;
 
-import com.example.demo.dto.DashboardDTO;
-import com.example.demo.entity.AuditReport;
-import com.example.demo.repository.AuditReportRepository;
-import com.example.demo.repository.DatasetRepository;
+import com.example.demo.dto.DashboardSummaryDTO;
+import com.example.demo.dto.DistributionDTO;
+import com.example.demo.dto.RecentReportDTO;
+import com.example.demo.dto.TrendDataDTO;
+import com.example.demo.service.DashboardService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -23,44 +17,45 @@ import java.util.List;
 @RequestMapping("/api/dashboard")
 public class DashboardController {
 
-    private final AuditReportRepository auditReportRepository;
-    private final DatasetRepository datasetRepository;
+    private final DashboardService dashboardService;
 
-    public DashboardController(AuditReportRepository auditReportRepository, DatasetRepository datasetRepository) {
-        this.auditReportRepository = auditReportRepository;
-        this.datasetRepository = datasetRepository;
+    public DashboardController(DashboardService dashboardService) {
+        this.dashboardService = dashboardService;
     }
 
-    @GetMapping
-    public ResponseEntity<DashboardDTO> getDashboardData() {
-        // 1. Identify the teammate currently logged in
-        String uid = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    private String getAuthenticatedUserId() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof String) {
+            return (String) principal;
+        }
+        return null;
+    }
 
-        // 2. Fetch specific counts for this user
-        List<AuditReport> userReports = auditReportRepository.findByUserId(uid);
-        long totalDatasets = datasetRepository.findByUploadedByFirebaseUid(uid).size();
-        long totalReports = userReports.size();
+    @GetMapping("/summary")
+    public ResponseEntity<DashboardSummaryDTO> getSummary() {
+        String userId = getAuthenticatedUserId();
+        if (userId == null) return ResponseEntity.status(401).build();
+        return ResponseEntity.ok(dashboardService.getSummary(userId));
+    }
 
-        // 3. Calculate Bias Stats
-        long biasedCount = userReports.stream().filter(AuditReport::isBiased).count();
+    @GetMapping("/recent")
+    public ResponseEntity<List<RecentReportDTO>> getRecentReports() {
+        String userId = getAuthenticatedUserId();
+        if (userId == null) return ResponseEntity.status(401).build();
+        return ResponseEntity.ok(dashboardService.getRecentReports(userId));
+    }
 
-        double avgDisparity = userReports.stream()
-                .mapToDouble(AuditReport::getDisparityRatio)
-                .average()
-                .orElse(0.0);
+    @GetMapping("/trends")
+    public ResponseEntity<TrendDataDTO> getTrendData() {
+        String userId = getAuthenticatedUserId();
+        if (userId == null) return ResponseEntity.status(401).build();
+        return ResponseEntity.ok(dashboardService.getTrendData(userId));
+    }
 
-        // 4. Get the last 5 activities for the "Recent Activity" table
-        List<AuditReport> recent = userReports.size() > 5
-                ? userReports.subList(userReports.size() - 5, userReports.size())
-                : userReports;
-
-        DashboardDTO dashboard = new DashboardDTO(
-                totalDatasets,
-                totalReports,
-                biasedCount,
-                avgDisparity,
-                recent);
-
-        return ResponseEntity.ok(dashboard);
+    @GetMapping("/distribution")
+    public ResponseEntity<DistributionDTO> getDistribution() {
+        String userId = getAuthenticatedUserId();
+        if (userId == null) return ResponseEntity.status(401).build();
+        return ResponseEntity.ok(dashboardService.getDistribution(userId));
     }
 }
