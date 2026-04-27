@@ -82,3 +82,10 @@ exports/
 # =========================
 *.pid
 docker-compose.override.yml
+
+
+.firebase/
+.firebaserc
+backend/env.yaml
+dist/
+DEPLOY.md

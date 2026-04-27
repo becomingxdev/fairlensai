@@ -3,7 +3,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Sun, Moon, Monitor, CheckCircle2, Palette, ShieldCheck,
-  Layout, BellRing, Mail, Key, Smartphone, Users, Database, Globe,
+  Layout, BellRing, Mail, Key, Smartphone, Database, Globe,
   Monitor as MonitorIcon
 } from 'lucide-react';
 import Sidebar from '../components/Sidebar';

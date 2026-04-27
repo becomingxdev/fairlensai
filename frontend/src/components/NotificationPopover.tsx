@@ -1,11 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  ShieldAlert, 
   CheckCircle2, 
-  Info, 
-  X, 
-  Clock,
-  ArrowRight
+  X 
 } from 'lucide-react';
 
 interface NotificationPopoverProps {
